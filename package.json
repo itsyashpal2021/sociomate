@@ -1,0 +1,22 @@
+{
+  "name": "sociomate",
+  "version": "1.0.0",
+  "description": "A single dashboard for all your social media plateforms.",
+  "main": "index.js",
+  "scripts": {
+    "client": "npm start --prefix client",
+    "server":"nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/itsyashpal2021/sociomate.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/itsyashpal2021/sociomate/issues"
+  },
+  "homepage": "https://github.com/itsyashpal2021/sociomate#readme"
+}
