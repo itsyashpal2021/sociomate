@@ -1,0 +1,8 @@
+@keyframes typing {
+  0% {
+    width: 0;
+  }
+  80% {
+    width: 210px;
+  }
+}

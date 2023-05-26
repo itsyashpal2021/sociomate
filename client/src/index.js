@@ -1,22 +1,28 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { Register } from "./components/register";
+import { Login } from "./components/login";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <h1>path is /</h1>,
+    element: <Register />,
   },
   {
     path: "/login",
-    element: <h1>This is login</h1>,
+    element: <Login />,
+  },
+  {
+    path: "/register",
+    element: <Register />,
   },
 ]);
 
 const root = document.getElementById("root");
-root.style.height = window.innerHeight + "px";
+root.style.minHeight = window.innerHeight + "px";
 window.addEventListener("resize", () => {
-  root.style.height = window.innerHeight + "px";
+  root.style.minHeight = window.innerHeight + "px";
 });
 
 ReactDOM.createRoot(root).render(

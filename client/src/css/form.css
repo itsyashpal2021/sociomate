@@ -1,0 +1,36 @@
+.form-label {
+  font-weight: 700;
+  display: block;
+  margin: 0;
+  user-select: none;
+}
+input {
+  border: 2px solid black;
+  background-color: #f8f1f1;
+  width: 100%;
+  font-weight: 700;
+  box-shadow: none;
+  color: #005eaa;
+}
+div:has(.form-control-lg) {
+  min-width: 42%;
+}
+.form-check-input:focus {
+  border: none;
+  box-shadow: none;
+}
+input[type="checkbox"]:checked {
+  background-color: black;
+  border: none;
+  box-shadow: none;
+}
+input:focus-visible {
+  outline: none;
+}
+.errorLabel {
+  color: crimson;
+  font-weight: bold;
+  margin-top: 5px;
+  user-select: none;
+  margin-right: auto;
+}
