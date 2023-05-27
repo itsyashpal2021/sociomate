@@ -1,12 +1,20 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { postToNodeServer } from "../utils";
 
 export function Login() {
   const [errorLabel, setErrorLabel] = useState(undefined);
-  const onLogin = (e) => {
+  const navigate = useNavigate();
+
+  const onLogin = async (e) => {
     e.preventDefault();
-    window.alert("login");
+    const formValues = Object.fromEntries(new FormData(e.target));
+    const res = await postToNodeServer("/login", formValues);
+    if (res.status === 401) setErrorLabel("** Invalid Login **");
+    else if (res.status === 200) navigate("/dashboard");
+    else setErrorLabel(res.message);
   };
+
   return (
     <div className="container-fluid row">
       <div className="col-6 flex-wrap m-auto d-flex align-items-center justify-content-center px-4 py-3">

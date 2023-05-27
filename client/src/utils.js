@@ -14,6 +14,8 @@ axios.interceptors.response.use(
 const nodeURL = "http://localhost:5000";
 
 export const postToNodeServer = async (route, body) => {
-  const res = await axios.post(nodeURL + route, body);
+  const res = await axios.post(nodeURL + route, body, {
+    withCredentials: true,
+  });
   return res;
 };

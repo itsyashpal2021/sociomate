@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import "../css/form.css";
 import "../css/animations.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { postToNodeServer } from "../utils";
 
 export function Register() {
   const [errorLabel, setErrorLabel] = useState(undefined);
+  const navigate = useNavigate();
+
   const onRegister = async (e) => {
     e.preventDefault();
     setErrorLabel(undefined);
@@ -16,7 +18,10 @@ export function Register() {
     }
     const res = await postToNodeServer("/register", formValues);
     if (res.status === 400) setErrorLabel(res.message);
+    else if (res.status === 200) navigate("/dashboard");
+    else setErrorLabel(res.message);
   };
+
   return (
     <div className="container-fluid row">
       <div className="col-6 flex-wrap m-auto d-flex align-items-center justify-content-center px-4 py-3">

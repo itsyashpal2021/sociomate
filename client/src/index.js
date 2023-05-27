@@ -3,11 +3,13 @@ import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Register } from "./components/register";
 import { Login } from "./components/login";
+import { ForgotPassword } from "./components/forgotPassword";
+import Dashboard from "./components/dashboard";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Register />,
+    element: <Login />,
   },
   {
     path: "/login",
@@ -16,6 +18,14 @@ const router = createBrowserRouter([
   {
     path: "/register",
     element: <Register />,
+  },
+  {
+    path: "/forgotPassword",
+    element: <ForgotPassword />,
+  },
+  {
+    path: "/dashboard",
+    element: <Dashboard />,
   },
 ]);
 

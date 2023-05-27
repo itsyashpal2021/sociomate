@@ -34,3 +34,14 @@ input:focus-visible {
   user-select: none;
   margin-right: auto;
 }
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+.otpInput {
+  width: 50px;
+  height: 50px;
+}
