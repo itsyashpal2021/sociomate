@@ -21,7 +21,6 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
   try {
-    console.log("here");
     const user = new User(req.body);
     req.logIn(user, function (err) {
       if (err) {
@@ -46,7 +45,7 @@ const checkSession = async (req, res) => {
   }
 };
 
-const logout = async (req, res) => {
+const signout = async (req, res) => {
   try {
     req.logOut(function (err) {
       if (err) {
@@ -58,4 +57,4 @@ const logout = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
-module.exports = { register, login, checkSession, logout };
+module.exports = { register, login, checkSession, signout };

@@ -3,7 +3,13 @@ const cors = require("cors");
 const { connectToMongo, User } = require("./db.js");
 const session = require("express-session");
 const passport = require("passport");
-const { register, login, checkSession, logout } = require("./posts/user.js");
+const {
+  register,
+  login,
+  checkSession,
+  logout,
+  signout,
+} = require("./posts/user.js");
 require("dotenv").config();
 
 const app = express();
@@ -34,7 +40,7 @@ passport.deserializeUser(User.deserializeUser());
 app.post("/register", register);
 app.post("/login", login);
 app.post("/checkSession", checkSession);
-app.post("/logout", logout);
+app.post("/signout", signout);
 
 connectToMongo(process.env.MONGO_URI).then(() => {
   app.listen(port, () => {

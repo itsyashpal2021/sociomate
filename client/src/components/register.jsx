@@ -26,7 +26,7 @@ export function Register() {
     <div className="container-fluid row">
       <div className="col-6 flex-wrap m-auto d-flex align-items-center justify-content-center px-4 py-3">
         <img
-          src={require("../logo.png")}
+          src={require("../Images/logo.png")}
           alt="logo.png"
           style={{ maxHeight: "80px" }}
           className="me-3"

@@ -1,0 +1,31 @@
+.btn-search {
+  top: 0%;
+  height: 100%;
+  border: none;
+  left: 97%;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  background-color: #f8f1f1;
+  border: 2px solid black;
+  border-left: none;
+}
+.btn-search:hover,
+.btn-search:active,
+.btn-search:disabled {
+  opacity: 1;
+  background-color: #ccc7c7;
+  border: 2px solid black;
+  border-left: none;
+}
+
+input[type="search"]::-webkit-search-cancel-button {
+  display: none;
+}
+
+.socialMediaIcon {
+  height: 20px;
+}
+
+#optionMenu > div:hover {
+  background-color: #34343cf7;
+}
