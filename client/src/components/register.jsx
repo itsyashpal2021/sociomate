@@ -18,7 +18,7 @@ export function Register() {
     }
     const res = await postToNodeServer("/register", formValues);
     if (res.status === 400) setErrorLabel(res.message);
-    else if (res.status === 200) navigate("/dashboard");
+    else if (res.status === 200) navigate("/dashboard/home");
     else setErrorLabel(res.message);
   };
 

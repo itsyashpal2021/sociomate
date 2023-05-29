@@ -11,7 +11,7 @@ export function Login() {
     const formValues = Object.fromEntries(new FormData(e.target));
     const res = await postToNodeServer("/login", formValues);
     if (res.status === 401) setErrorLabel("** Invalid Login **");
-    else if (res.status === 200) navigate("/dashboard");
+    else if (res.status === 200) navigate("/dashboard/home");
     else setErrorLabel(res.message);
   };
 

@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import {
   createBrowserRouter,
+  Navigate,
   RouterProvider,
   useRouteError,
 } from "react-router-dom";
@@ -9,11 +10,12 @@ import { Register } from "./components/register";
 import { Login } from "./components/login";
 import { ForgotPassword } from "./components/forgotPassword";
 import Dashboard from "./components/dashboard";
+import Accounts from "./components/accounts";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Dashboard />,
+    element: <Navigate to={"/dashboard/home"} />,
     errorElement: <ErrorBoundry />,
   },
   {
@@ -31,6 +33,20 @@ const router = createBrowserRouter([
   {
     path: "/dashboard",
     element: <Dashboard />,
+    children: [
+      {
+        path: "/dashboard/home",
+        element: <h1>This is home</h1>,
+      },
+      {
+        path: "/dashboard/accounts",
+        element: <Accounts />,
+      },
+      {
+        path: "/dashboard/profile",
+        element: <h1>This is profile</h1>,
+      },
+    ],
   },
 ]);
 

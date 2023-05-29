@@ -29,3 +29,13 @@ input[type="search"]::-webkit-search-cancel-button {
 #optionMenu > div:hover {
   background-color: #34343cf7;
 }
+
+.modal-dialog {
+  height: "80vh";
+}
+
+@media only screen and (min-width: 768px) {
+  .modal-dialog {
+    min-width: 704px !important;
+  }
+}

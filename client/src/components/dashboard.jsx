@@ -1,49 +1,46 @@
 import React, { useEffect, useState } from "react";
 import { postToNodeServer } from "../utils";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link, Outlet, useLocation } from "react-router-dom";
 import "../css/dashboard.css";
-import Accounts from "./accounts";
 
 export default function Dashboard() {
   const [sessionActive, setSessionActive] = useState(false);
-  const [navlink, setNavlink] = useState("Home");
+  const [userData, setUserData] = useState(undefined);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
+    const getUserdata = async () => {
+      const res = await postToNodeServer("/userData", {});
+      if (res.status === 200) {
+        console.log(res.userData);
+        setUserData({ ...res.userData });
+      }
+    };
     const checkSession = async () => {
       const res = await postToNodeServer("/checkSession", {});
       if (res.sessionActive === false) navigate("/login");
-      else setSessionActive(res.sessionActive);
+      else {
+        getUserdata();
+        setSessionActive(res.sessionActive);
+      }
     };
     checkSession();
   }, [navigate]);
 
+  useEffect(() => {
+    if (!sessionActive) return;
+    [...document.getElementsByClassName("active")].forEach((el) => {
+      el.classList.remove("active");
+    });
+    const path = location.pathname;
+    const navLink = document.getElementById(path.split("/dashboard/")[1]);
+    if (navLink) navLink.classList.add("active");
+  }, [location.pathname, sessionActive]);
+
   const signout = async () => {
     const res = await postToNodeServer("/signout", {});
     if (res.status === 200) navigate("/login");
-  };
-
-  const makeActive = (e) => {
-    const currentActive = document.getElementsByClassName("active")[0];
-    currentActive.classList.remove("active");
-    e.target.classList.add("active");
-    setNavlink(e.target.innerHTML);
-  };
-
-  const getDashboardContent = () => {
-    switch (navlink) {
-      case "Home":
-        return <h1>This is Home</h1>;
-
-      case "My Profile":
-        return <h1>This is Profile</h1>;
-
-      case "Manage Accounts":
-        return <Accounts />;
-
-      default:
-        return <></>;
-    }
   };
 
   return sessionActive ? (
@@ -84,23 +81,31 @@ export default function Dashboard() {
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <ul className="navbar-nav mx-auto mb-2 mb-lg-0">
               <li className="nav-item">
-                <span
-                  className="nav-link active mx-lg-2"
-                  aria-current="page"
-                  onClick={makeActive}
+                <Link
+                  to={"/dashboard/home"}
+                  className="nav-link mx-lg-2"
+                  id="home"
                 >
                   Home
-                </span>
+                </Link>
               </li>
               <li className="nav-item">
-                <span className="nav-link mx-lg-2" onClick={makeActive}>
+                <Link
+                  to={"/dashboard/accounts"}
+                  className="nav-link mx-lg-2"
+                  id="accounts"
+                >
                   Manage Accounts
-                </span>
+                </Link>
               </li>
               <li className="nav-item">
-                <span className="nav-link mx-lg-2" onClick={makeActive}>
+                <Link
+                  to={"/dashboard/profile"}
+                  className="nav-link mx-lg-2"
+                  id="profile"
+                >
                   My Profile
-                </span>
+                </Link>
               </li>
             </ul>
             <button
@@ -112,8 +117,7 @@ export default function Dashboard() {
           </div>
         </div>
       </nav>
-
-      {getDashboardContent()}
+      <Outlet />
     </div>
   ) : (
     <h2 className="text-white fw-bold">Loading</h2>

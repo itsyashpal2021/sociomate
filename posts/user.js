@@ -1,4 +1,4 @@
-const { User } = require("../db.js");
+const { User, Account } = require("../db.js");
 const passport = require("passport");
 
 const register = async (req, res) => {
@@ -22,6 +22,7 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   try {
     const user = new User(req.body);
+    console.log("here in login", req.body);
     req.logIn(user, function (err) {
       if (err) {
         throw err;
@@ -57,4 +58,23 @@ const signout = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
-module.exports = { register, login, checkSession, signout };
+
+const userData = async (req, res) => {
+  try {
+    let userData = new User(req.user).toJSON();
+    let accounts = await Account.find({ username: userData.username });
+    accounts = accounts.map((account) => {
+      return {
+        platform: account.platform,
+        id: account.id,
+      };
+    });
+
+    userData = { ...userData, accounts: accounts };
+
+    res.status(200).json({ userData: userData });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+module.exports = { register, login, checkSession, signout, userData };

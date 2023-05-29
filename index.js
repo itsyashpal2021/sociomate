@@ -7,9 +7,10 @@ const {
   register,
   login,
   checkSession,
-  logout,
   signout,
+  userData,
 } = require("./posts/user.js");
+const { searchYt, addYtAccount } = require("./posts/yt.js");
 require("dotenv").config();
 
 const app = express();
@@ -41,6 +42,30 @@ app.post("/register", register);
 app.post("/login", login);
 app.post("/checkSession", checkSession);
 app.post("/signout", signout);
+app.post("/accountSearch", async (req, res) => {
+  switch (req.body.platform) {
+    case "Youtube":
+      searchYt(req.body.username, res);
+      break;
+
+    default:
+      res.status(400).json({ message: "Something Went Wrong." });
+      break;
+  }
+});
+app.post("/addAccount", async (req, res) => {
+  switch (req.body.platform) {
+    case "Youtube":
+      addYtAccount(req.body.id, req.user.username, res);
+      break;
+
+    default:
+      res.status(400).json({ message: "Something Went Wrong." });
+      break;
+  }
+});
+
+app.post("/userData", userData);
 
 connectToMongo(process.env.MONGO_URI).then(() => {
   app.listen(port, () => {
