@@ -11,7 +11,11 @@ const {
   userData,
 } = require("./posts/user.js");
 const { searchYt, addYtAccount } = require("./posts/yt.js");
-const { accountSearch, addAccount } = require("./posts/account.js");
+const {
+  accountSearch,
+  addAccount,
+  removeAccount,
+} = require("./posts/account.js");
 require("dotenv").config();
 
 const app = express();
@@ -49,6 +53,7 @@ app.post("/userData", userData);
 //account
 app.post("/accountSearch", accountSearch);
 app.post("/addAccount", addAccount);
+app.post("/removeAccount", removeAccount);
 
 connectToMongo(process.env.MONGO_URI).then(() => {
   app.listen(port, () => {

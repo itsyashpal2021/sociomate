@@ -2,13 +2,15 @@ import React, { useEffect, useState } from "react";
 import "../css/form.css";
 import "../css/accounts.css";
 import { formatNumberShort, postToNodeServer } from "../utils";
-import { useOutletContext } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { removeAccount } from "../store";
 
 export default function Accounts() {
   const [platform, setPlatform] = useState("");
   const [searchText, setSearchText] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-  const userData = useOutletContext();
+  const accounts = useSelector((state) => state.userData.accounts);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     document.getElementById("search").focus();
@@ -35,7 +37,18 @@ export default function Accounts() {
       platform: platform,
       id: id,
     });
-    console.log(res);
+    // TODO: update userdata on account addition
+    if (res.status === 200) console.log(res);
+  };
+
+  const onRemoveAccount = async (platform) => {
+    const res = await postToNodeServer("/removeAccount", {
+      platform: platform,
+      id: accounts[platform],
+    });
+    if (res.status === 200) {
+      dispatch(removeAccount(platform));
+    }
   };
 
   const getSearchLabel = () => {
@@ -88,33 +101,36 @@ export default function Accounts() {
           <span className="h3 p-2 my-3 d-inline-block px-3 rounded-pill text-bg-warning user-select-none">
             Added Accounts
           </span>
-          {userData.accounts.Youtube ? (
+          {accounts.Youtube ? (
             <div
               className="d-flex align-items-center p-5 my-2 border border-2 border-black rounded-5"
               style={{ backgroundColor: "rgb(17 104 122)" }}
             >
               <img
-                src={userData.accounts.Youtube.details.thumbnail}
+                src={accounts.Youtube.details.thumbnail}
                 alt="thumbnail"
                 className="rounded-circle"
               />
               <div className="d-flex flex-column ms-3">
                 <span className="h3 text-white m-0">
-                  {userData.accounts.Youtube.details.channelTitle}
+                  {accounts.Youtube.details.channelTitle}
                 </span>
                 <span className="fs-6 text-white-50">
-                  {userData.accounts.Youtube.details.description}
+                  {accounts.Youtube.details.description}
                 </span>
               </div>
               <div className="mx-auto d-flex flex-column p-2 text-black">
                 <span className="h1 m-0">
                   {formatNumberShort(
-                    userData.accounts.Youtube.statistics.subscriberCount
+                    accounts.Youtube.statistics.subscriberCount
                   )}
                 </span>
                 <span className="h5 fw-bold">subscribers</span>
               </div>
-              <button className="btn btn-dark btn-light h-100 p-2">
+              <button
+                className="btn btn-dark btn-light h-100 p-2"
+                onClick={() => onRemoveAccount("Youtube")}
+              >
                 Remove
               </button>
             </div>

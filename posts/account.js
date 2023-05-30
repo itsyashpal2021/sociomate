@@ -43,4 +43,8 @@ const addAccount = async (req, res) => {
   }
 };
 
-module.exports = { getAccountInfo, accountSearch, addAccount };
+const removeAccount = async (req, res) => {
+  res.status(200).json({ message: "success" });
+};
+
+module.exports = { getAccountInfo, accountSearch, addAccount, removeAccount };
