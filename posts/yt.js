@@ -72,7 +72,10 @@ const addYtAccount = async (channelId, username, res) => {
     await newAccount.save();
 
     const statistics = await getChannelStatistics(channelId);
-    res.status(200).json(statistics);
+    const details = await getChannelDetails(channelId);
+    res
+      .status(200)
+      .json({ accountData: { id: channelId, statistics, details } });
   } catch (error) {
     if (error.code === 11000) {
       res.status(400).json({

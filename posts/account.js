@@ -1,9 +1,11 @@
+const { default: mongoose } = require("mongoose");
 const {
   getChannelDetails,
   getChannelStatistics,
   addYtAccount,
   searchYt,
 } = require("./yt");
+const { Account } = require("../db");
 
 const getAccountInfo = async (account) => {
   let details, statistics;
@@ -44,7 +46,18 @@ const addAccount = async (req, res) => {
 };
 
 const removeAccount = async (req, res) => {
-  res.status(200).json({ message: "success" });
+  try {
+    // const username = req.body.username;
+    const username = req.user.username;
+    const platform = req.body.platform;
+    await Account.findOneAndDelete({
+      username: username,
+      platform: platform,
+    });
+    res.status(200).json({ message: "success" });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
 };
 
 module.exports = { getAccountInfo, accountSearch, addAccount, removeAccount };

@@ -6,13 +6,19 @@ export const userDataSlice = createSlice({
   reducers: {
     setUserData: (state, action) => action.payload,
     removeAccount: (state, action) => {
-      state.accounts[action.payload] = undefined;
+      delete state.accounts[action.payload];
+      return state;
+    },
+    addAccount: (state, action) => {
+      state.accounts[action.payload.platform] = {
+        ...action.payload.accountData,
+      };
       return state;
     },
   },
 });
 
-export const { setUserData, removeAccount } = userDataSlice.actions;
+export const { setUserData, removeAccount, addAccount } = userDataSlice.actions;
 export default configureStore({
   reducer: {
     userData: userDataSlice.reducer,
