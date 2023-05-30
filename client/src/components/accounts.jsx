@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import "../css/form.css";
 import "../css/accounts.css";
-import { postToNodeServer } from "../utils";
+import { formatNumberShort, postToNodeServer } from "../utils";
+import { useOutletContext } from "react-router-dom";
 
 export default function Accounts() {
   const [platform, setPlatform] = useState("");
   const [searchText, setSearchText] = useState("");
   const [searchResults, setSearchResults] = useState([]);
+  const userData = useOutletContext();
 
   useEffect(() => {
     document.getElementById("search").focus();
@@ -70,10 +72,10 @@ export default function Accounts() {
   };
 
   return (
-    <div className="container-fluid row">
-      <div className="col-11 d-flex flex-column mt-2">
+    <div className="container-fluid row m-0 p-0 justify-content-center">
+      <div className="col-11 d-flex flex-column">
         <button
-          className="btn btn-primary ms-auto"
+          className="btn btn-primary ms-auto mt-2"
           data-bs-toggle="modal"
           data-bs-target="#addAccountModal"
           onClick={() => setPlatform("Youtube")}
@@ -81,9 +83,48 @@ export default function Accounts() {
           <i className="fa-solid fa-plus me-2" />
           Add Account
         </button>
+
+        <div className="p-3">
+          <span className="h3 p-2 my-3 d-inline-block px-3 rounded-pill text-bg-warning user-select-none">
+            Added Accounts
+          </span>
+          {userData.accounts.Youtube ? (
+            <div
+              className="d-flex align-items-center p-5 my-2 border border-2 border-black rounded-5"
+              style={{ backgroundColor: "rgb(17 104 122)" }}
+            >
+              <img
+                src={userData.accounts.Youtube.details.thumbnail}
+                alt="thumbnail"
+                className="rounded-circle"
+              />
+              <div className="d-flex flex-column ms-3">
+                <span className="h3 text-white m-0">
+                  {userData.accounts.Youtube.details.channelTitle}
+                </span>
+                <span className="fs-6 text-white-50">
+                  {userData.accounts.Youtube.details.description}
+                </span>
+              </div>
+              <div className="mx-auto d-flex flex-column p-2 text-black">
+                <span className="h1 m-0">
+                  {formatNumberShort(
+                    userData.accounts.Youtube.statistics.subscriberCount
+                  )}
+                </span>
+                <span className="h5 fw-bold">subscribers</span>
+              </div>
+              <button className="btn btn-dark btn-light h-100 p-2">
+                Remove
+              </button>
+            </div>
+          ) : (
+            <></>
+          )}
+        </div>
       </div>
 
-      {/* Modal */}
+      {/* add acount modal */}
       <div
         className="modal fade"
         id="addAccountModal"

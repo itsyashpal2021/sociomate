@@ -32,12 +32,34 @@ const searchYt = async (channelName, res) => {
   }
 };
 
-const getStatistics = async (channelId) => {
-  const response = await youtube.channels.list({
-    part: ["statistics"],
-    id: [channelId],
-  });
-  return response.data.items[0].statistics;
+const getChannelStatistics = async (channelId) => {
+  try {
+    const response = await youtube.channels.list({
+      part: ["statistics"],
+      id: [channelId],
+    });
+    return response.data.items[0].statistics;
+  } catch (error) {
+    throw error.response.data.error;
+  }
+};
+
+const getChannelDetails = async (channelId) => {
+  try {
+    const response = await youtube.channels.list({
+      part: ["snippet"],
+      id: [channelId],
+    });
+    const details = response.data.items[0].snippet;
+    return {
+      channelTitle: details.title,
+      description: details.description,
+      thumbnail: details.thumbnails.default.url,
+    };
+  } catch (error) {
+    console.log(error.response.data.error);
+    throw error.response.data.error;
+  }
 };
 
 const addYtAccount = async (channelId, username, res) => {
@@ -49,7 +71,7 @@ const addYtAccount = async (channelId, username, res) => {
     });
     await newAccount.save();
 
-    const statistics = await getStatistics(channelId);
+    const statistics = await getChannelStatistics(channelId);
     res.status(200).json(statistics);
   } catch (error) {
     if (error.code === 11000) {
@@ -62,4 +84,10 @@ const addYtAccount = async (channelId, username, res) => {
     }
   }
 };
-module.exports = { searchYt, addYtAccount };
+
+module.exports = {
+  searchYt,
+  getChannelStatistics,
+  getChannelDetails,
+  addYtAccount,
+};

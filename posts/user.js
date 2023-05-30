@@ -1,5 +1,6 @@
 const { User, Account } = require("../db.js");
 const passport = require("passport");
+const { getAccountInfo } = require("./account.js");
 
 const register = async (req, res) => {
   try {
@@ -22,7 +23,6 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   try {
     const user = new User(req.body);
-    console.log("here in login", req.body);
     req.logIn(user, function (err) {
       if (err) {
         throw err;
@@ -62,15 +62,25 @@ const signout = async (req, res) => {
 const userData = async (req, res) => {
   try {
     let userData = new User(req.user).toJSON();
+    // let userData = new User(req.body.user).toJSON();
     let accounts = await Account.find({ username: userData.username });
-    accounts = accounts.map((account) => {
-      return {
-        platform: account.platform,
-        id: account.id,
-      };
-    });
+    accounts = await Promise.all(
+      accounts.map(async (account) => {
+        const info = await getAccountInfo(account);
+        return {
+          [account.platform]: {
+            id: account.id,
+            ...info,
+          },
+        };
+      })
+    );
 
-    userData = { ...userData, accounts: accounts };
+    let accountsJson = {};
+    accounts.forEach((account) => {
+      accountsJson = { ...accountsJson, ...account };
+    });
+    userData = { ...userData, accounts: accountsJson };
 
     res.status(200).json({ userData: userData });
   } catch (error) {

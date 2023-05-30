@@ -13,7 +13,6 @@ export default function Dashboard() {
     const getUserdata = async () => {
       const res = await postToNodeServer("/userData", {});
       if (res.status === 200) {
-        console.log(res.userData);
         setUserData({ ...res.userData });
       }
     };
@@ -117,9 +116,13 @@ export default function Dashboard() {
           </div>
         </div>
       </nav>
-      <Outlet />
+      {userData ? (
+        <Outlet context={userData} />
+      ) : (
+        <h2 className="text-white text-center fw-bold my-5">Loading user</h2>
+      )}
     </div>
   ) : (
-    <h2 className="text-white fw-bold">Loading</h2>
+    <h2 className="text-white fw-bold text-center">Loading Dashboard</h2>
   );
 }
