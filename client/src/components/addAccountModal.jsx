@@ -2,7 +2,8 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { addAccount } from "../store";
-import { postToNodeServer } from "../utils";
+import { postToNodeServer, startSpinner, stopSpinner } from "../utils";
+import Spinner from "./spinner";
 
 export default function AddAccountModal() {
   const [platform, setPlatform] = useState("");
@@ -267,16 +268,21 @@ export default function AddAccountModal() {
                         </div>
                         <button
                           className={
-                            "btn btn-success ms-auto opacity-" +
+                            "btn btn-success ms-auto position-relative opacity-" +
                             (accounts[platform] !== undefined ? "75" : "100")
                           }
-                          onClick={() => onAddAccount(searchResult.channelId)}
+                          onClick={async (e) => {
+                            startSpinner(e.target);
+                            await onAddAccount(searchResult.channelId);
+                            stopSpinner(e.target);
+                          }}
                           disabled={accounts[platform] !== undefined}
                         >
                           {accounts[platform] &&
                           accounts[platform].id === searchResult.channelId
                             ? "Added"
                             : "Add"}
+                          <Spinner />
                         </button>
                       </div>
                     );

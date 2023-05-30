@@ -1,10 +1,16 @@
 import React from "react";
 import "../css/form.css";
 import "../css/accounts.css";
-import { formatNumberShort, postToNodeServer } from "../utils";
+import {
+  formatNumberShort,
+  postToNodeServer,
+  startSpinner,
+  stopSpinner,
+} from "../utils";
 import { useSelector, useDispatch } from "react-redux";
 import { removeAccount } from "../store";
 import AddAccountModal from "./addAccountModal";
+import Spinner from "./spinner";
 
 export default function Accounts() {
   const accounts = useSelector((state) => state.userData.accounts);
@@ -87,10 +93,15 @@ export default function Accounts() {
                 >
                   {getAccountInfo(platform)}
                   <button
-                    className="btn btn-dark btn-light h-100 p-2"
-                    onClick={() => onRemoveAccount(platform)}
+                    className="btn btn-dark btn-light h-100 p-2 position-relative"
+                    onClick={async (e) => {
+                      startSpinner(e.target);
+                      await onRemoveAccount(platform);
+                      stopSpinner(e.target);
+                    }}
                   >
                     Remove
+                    <Spinner />
                   </button>
 
                   {/* platform tag */}

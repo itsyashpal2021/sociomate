@@ -33,3 +33,15 @@ export const formatNumberShort = (number) => {
   }
   return number.toString();
 };
+
+export const startSpinner = (node) => {
+  const spinner = node.querySelector(".spinner");
+  node.style.color = "transparent";
+  spinner.style.display = "block";
+};
+
+export const stopSpinner = (node) => {
+  const spinner = node.querySelector(".spinner");
+  node.style.color = "inherit";
+  spinner.style.display = "none";
+};
