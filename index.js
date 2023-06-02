@@ -3,6 +3,7 @@ const cors = require("cors");
 const { connectToMongo, User } = require("./db.js");
 const session = require("express-session");
 const passport = require("passport");
+const url = require("url");
 const {
   register,
   login,
@@ -10,12 +11,13 @@ const {
   signout,
   userData,
 } = require("./posts/user.js");
-const { searchYt, addYtAccount } = require("./posts/yt.js");
 const {
   accountSearch,
   addAccount,
   removeAccount,
 } = require("./posts/account.js");
+const { log } = require("util");
+const { setOAuth2Client, getAnalytics } = require("./posts/yt.js");
 require("dotenv").config();
 
 const app = express();
@@ -55,8 +57,17 @@ app.post("/accountSearch", accountSearch);
 app.post("/addAccount", addAccount);
 app.post("/removeAccount", removeAccount);
 
+app.post("/analytics", getAnalytics);
+
+app.get("/", (req, res) => {
+  const parsedUrl = url.parse(req.url, true);
+  console.log("here");
+  res.json(parsedUrl.query);
+});
+
 connectToMongo(process.env.MONGO_URI).then(() => {
   app.listen(port, () => {
     console.log(`App listening on port ${port}`);
+    // setOAuth2Client();
   });
 });

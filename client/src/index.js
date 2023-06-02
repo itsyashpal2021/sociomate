@@ -13,6 +13,7 @@ import Dashboard from "./components/dashboard";
 import Accounts from "./components/accounts";
 import { Provider } from "react-redux";
 import store from "./store.js";
+import Home from "./components/home";
 
 const router = createBrowserRouter([
   {
@@ -38,7 +39,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/dashboard/home",
-        element: <h1>This is home</h1>,
+        element: <Home />,
       },
       {
         path: "/dashboard/accounts",
@@ -47,6 +48,10 @@ const router = createBrowserRouter([
       {
         path: "/dashboard/profile",
         element: <h1>This is profile</h1>,
+      },
+      {
+        path: "/dashboard/",
+        element: <Navigate to="/dashboard/home" />,
       },
     ],
   },

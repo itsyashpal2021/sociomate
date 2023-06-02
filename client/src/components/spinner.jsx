@@ -1,9 +1,13 @@
 import React from "react";
 import "../css/animations.css";
 
-export default function Spinner() {
+export default function Spinner(props) {
   return (
-    <svg className="spinner" viewBox="0 0 50 50" style={{display:'none'}}>
+    <svg
+      className={"spinner " + props.className}
+      viewBox="0 0 50 50"
+      style={{ display: "none", ...props.style }}
+    >
       <circle
         className="path"
         cx="25"

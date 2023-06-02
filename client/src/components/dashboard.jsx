@@ -4,6 +4,7 @@ import { useNavigate, Link, Outlet, useLocation } from "react-router-dom";
 import "../css/dashboard.css";
 import { useSelector, useDispatch } from "react-redux";
 import { setUserData } from "../store.js";
+import Spinner from "./spinner.jsx";
 
 export default function Dashboard() {
   const [sessionActive, setSessionActive] = useState(false);
@@ -125,10 +126,19 @@ export default function Dashboard() {
       {userData ? (
         <Outlet />
       ) : (
-        <h2 className="text-white text-center fw-bold my-5">Loading user</h2>
+        <div className="container-fluid h-100 d-flex flex-column align-items-center justify-content-center mt-5">
+          <Spinner
+            className="position-static d-block"
+            style={{
+              width: "50px",
+              stroke: "#111153",
+            }}
+          />
+          <span className="text-white-50 h6 mt-1">Loading...</span>
+        </div>
       )}
     </div>
   ) : (
-    <h2 className="text-white fw-bold text-center">Loading Dashboard</h2>
+    <h2 className="text-white text-center fw-bold my-5">Loading dashboard</h2>
   );
 }
