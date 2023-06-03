@@ -1,14 +1,10 @@
-# sociomate
+# youtix
 
-A single dashboard for all your social media plateforms.
+Title: Youtix - YouTube Channel Management and Content Toolbox
 
 ## Features
 
-Login / Register
-light and dark mode
-ADD various social media accounts
-view stats: likes, followers, subcribers, views...
-
-## TODO
-
-yt-stats yt-overview with calender
+manage youtube channel - analytics and reports (possibly manage uploads)
+yt search ----> video downloader, converter, subtitles generater, thumbnail download
+yt music player
+compare channels

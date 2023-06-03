@@ -1,9 +1,10 @@
 const express = require("express");
+const fs = require("fs");
+const https = require("https");
 const cors = require("cors");
 const { connectToMongo, User } = require("./db.js");
 const session = require("express-session");
 const passport = require("passport");
-const url = require("url");
 const {
   register,
   login,
@@ -11,13 +12,7 @@ const {
   signout,
   userData,
 } = require("./posts/user.js");
-const {
-  accountSearch,
-  addAccount,
-  removeAccount,
-} = require("./posts/account.js");
-const { log } = require("util");
-const { setOAuth2Client, getAnalytics } = require("./posts/yt.js");
+
 require("dotenv").config();
 
 const app = express();
@@ -32,6 +27,10 @@ app.use(
     secret: process.env.SECRET_KEY,
     resave: false,
     saveUninitialized: true,
+    cookie: {
+      sameSite: "none",
+      secure: "auto",
+    },
   })
 );
 
@@ -53,20 +52,28 @@ app.post("/signout", signout);
 app.post("/userData", userData);
 
 //account
-app.post("/accountSearch", accountSearch);
-app.post("/addAccount", addAccount);
-app.post("/removeAccount", removeAccount);
+// app.post("/accountSearch", accountSearch);
+// app.post("/addAccount", addAccount);
+// app.post("/removeAccount", removeAccount);
 
-app.post("/analytics", getAnalytics);
+//serving static files in prod
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static("client/build"));
 
-app.get("/", (req, res) => {
-  const parsedUrl = url.parse(req.url, true);
-  console.log("here");
-  res.json(parsedUrl.query);
-});
+  app.get("*", (req, res) =>
+    res.sendFile(path.resolve(__dirname, "client", "build", "index.html"))
+  );
+}
+
+const options = {
+  key: fs.readFileSync("server.key"),
+  cert: fs.readFileSync("server.cert"),
+};
+
+const httpsServer = https.createServer(options, app);
 
 connectToMongo(process.env.MONGO_URI).then(() => {
-  app.listen(port, () => {
+  httpsServer.listen(port, () => {
     console.log(`App listening on port ${port}`);
     // setOAuth2Client();
   });

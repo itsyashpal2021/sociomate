@@ -132,3 +132,5 @@ dist
 yt-analytics-oauth.json
 token.json
 service-account-key.json
+server.cert
+server.key

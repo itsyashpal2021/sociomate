@@ -13,7 +13,7 @@ axios.interceptors.response.use(
   }
 );
 
-const nodeURL = "http://localhost:5000";
+const nodeURL = "https://localhost:5000";
 
 export const postToNodeServer = async (route, body) => {
   // console.log("in post");

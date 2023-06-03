@@ -1,5 +1,4 @@
 const { google } = require("googleapis");
-const { Account } = require("../db");
 require("dotenv").config();
 
 // Set up YouTube Data API client
@@ -61,33 +60,6 @@ const getChannelDetails = async (channelId) => {
     throw error.response.data.error;
   }
 };
-
-const addYtAccount = async (channelId, username, res) => {
-  try {
-    const newAccount = new Account({
-      username: username,
-      platform: "Youtube",
-      id: channelId,
-    });
-    await newAccount.save();
-
-    const statistics = await getChannelStatistics(channelId);
-    const details = await getChannelDetails(channelId);
-    res
-      .status(200)
-      .json({ accountData: { id: channelId, statistics, details } });
-  } catch (error) {
-    if (error.code === 11000) {
-      res.status(400).json({
-        message: "You already have an account added for this platform",
-      });
-    } else {
-      const err = error.response.data.error;
-      res.status(err.code).json(err.message);
-    }
-  }
-};
-
 //yt analytics set up
 
 // Your OAuth2 credentials
@@ -211,13 +183,12 @@ async function getAccessToken() {
 }
 
 // Call the function to get the access token
-getAccessToken();
+// getAccessToken();
 
 module.exports = {
   searchYt,
   getChannelStatistics,
   getChannelDetails,
-  addYtAccount,
   setOAuth2Client,
   getAnalytics,
 };

@@ -16,24 +16,9 @@ const userSchema = new Schema({
   lastName: String,
   username: { type: String, unique: true },
   email: { type: String, unique: true },
+  channels: [{ type: String }],
 });
 userSchema.plugin(passportLocalMongoose);
 const User = mongoose.model("User", userSchema);
 
-const accountSchema = new Schema({
-  username: String,
-  platform: String,
-  id: String,
-});
-accountSchema.index({ username: 1, platform: 1 }, { unique: true });
-// Ensure the index is created
-accountSchema.on("index", (err) => {
-  if (err) {
-    console.error("Error creating index:", err);
-  } else {
-    console.log("Index created successfully");
-  }
-});
-const Account = mongoose.model("Account", accountSchema);
-
-module.exports = { connectToMongo, User, Account };
+module.exports = { connectToMongo, User };

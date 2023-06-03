@@ -32,13 +32,11 @@ export function Register() {
           className="me-3"
         />
         <div className="text-center">
-          <h1 className="m-0" style={{ color: "#0F0" }}>
-            Sociomate
-          </h1>
+          <h1 className="m-0 text-info">youtix</h1>
           <p
             className="m-0"
             style={{
-              color: "#8a936a",
+              color: "rgb(182 182 182)",
               whiteSpace: "nowrap",
               animationName: "typing",
               animationDuration: "4s",
@@ -53,7 +51,7 @@ export function Register() {
         </div>
       </div>
       <h3 className="my-1 text-center" style={{ color: "#e1b579" }}>
-        Introducing a unified social media dashboard
+        Introducing a simple youtube toolbox
       </h3>
       <form
         onSubmit={onRegister}

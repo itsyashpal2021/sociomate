@@ -81,7 +81,7 @@ export default function Dashboard() {
               style={{ height: "45px" }}
               className="rounded"
             />
-            <span className="text-warning fs-4 ms-2 fw-bold">sociomate</span>
+            <span className="text-warning fs-4 ms-2 fw-bold">youtix</span>
           </div>
 
           <div className="collapse navbar-collapse" id="navbarSupportedContent">

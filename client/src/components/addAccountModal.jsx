@@ -1,7 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { addAccount } from "../store";
+import { useSelector } from "react-redux";
 import { postToNodeServer, startSpinner, stopSpinner } from "../utils";
 import Spinner from "./spinner";
 
@@ -9,8 +8,7 @@ export default function AddAccountModal() {
   const [platform, setPlatform] = useState("");
   const [searchText, setSearchText] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-  const accounts = useSelector((state) => state.userData.accounts);
-  const dispatch = useDispatch();
+  const accounts = useSelector((state) => state.userData.channels);
 
   useEffect(() => {
     document.getElementById("search").focus();
@@ -38,12 +36,7 @@ export default function AddAccountModal() {
       id: id,
     });
     if (res.status === 200) {
-      dispatch(
-        addAccount({
-          platform: platform,
-          accountData: { ...res.accountData },
-        })
-      );
+      // code for adding a channel
     }
   };
 

@@ -7,14 +7,12 @@ import {
   startSpinner,
   stopSpinner,
 } from "../utils";
-import { useSelector, useDispatch } from "react-redux";
-import { removeAccount } from "../store";
+import { useSelector } from "react-redux";
 import AddAccountModal from "./addAccountModal";
 import Spinner from "./spinner";
 
 export default function Accounts() {
-  const accounts = useSelector((state) => state.userData.accounts);
-  const dispatch = useDispatch();
+  const accounts = useSelector((state) => state.userData.channels);
 
   const onRemoveAccount = async (platform) => {
     const res = await postToNodeServer("/removeAccount", {
@@ -22,7 +20,7 @@ export default function Accounts() {
       id: accounts[platform],
     });
     if (res.status === 200) {
-      dispatch(removeAccount(platform));
+      //code for removing account
     }
   };
 
