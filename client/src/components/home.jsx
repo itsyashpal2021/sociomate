@@ -1,69 +1,115 @@
-import React from "react";
-import { useSelector } from "react-redux";
+import React, { useState } from "react";
+import { postToNodeServer } from "../utils.js";
+import Spinner from "./spinner";
+import ContentDownload from "./contentDownload.jsx";
 
 export default function Home() {
-  const accounts = useSelector((state) => state.userData.channels);
+  const [searchText, setSearchText] = useState("");
+  const [searchResult, setSearchResult] = useState([]);
+  const [contentToDownload, setContentToDownload] = useState(undefined);
 
-  const getYoutubeStats = () => {
-    return (
-      <div
-        className="col-2 border border-2 border-black px-2 py-3 fw-bold rounded d-flex flex-column justify-content-center align-items-center position-relative"
-        style={{ backgroundColor: "rgba(0,0,0,0.14)" }}
-      >
-        <img
-          src={accounts.Youtube.details.thumbnail}
-          alt="thumbnail"
-          className="rounded-circle"
-          style={{ width: "60%" }}
-        />
-        <div className="my-1">
-          <img
-            src={require("../Images/youtube.png")}
-            alt="icon"
-            width={"30px"}
-          />
-          <span className="text-white fs-6 ms-1">
-            {accounts.Youtube.details.channelTitle}
-          </span>
-        </div>
-        <hr
-          className="bg-primary-subtle my-1 opacity-100 w-100"
-          style={{ height: "3px" }}
-        />
-        <span className="text-danger">
-          Subscribers : {accounts.Youtube.statistics.subscriberCount}
-        </span>
-        <span className="text-info">
-          Views : {accounts.Youtube.statistics.viewCount}
-        </span>
-        <span className="text-warning">
-          Videos : {accounts.Youtube.statistics.videoCount}
-        </span>
-      </div>
-    );
+  const onSearch = async () => {
+    document.getElementById("homeSearchSpinner").style.display = "block";
+
+    const res = await postToNodeServer("/ytSearch", { searchText: searchText });
+    if (res.status === 200) {
+      setSearchResult([...res.searchResult]);
+    }
+    document.getElementById("homeSearchSpinner").style.display = "none";
   };
 
   return (
     <div className="container-fluid row justify-content-center">
-      <div className="col-11 py-2 my-2">
-        <span
-          className="border border-2 border-black fw-normal h1 px-2 py-1 rounded text-white user-select-none"
-          style={{ backgroundColor: "rgba(0,0,0,0.6)" }}
-        >
-          <i className="fa-sharp fa-solid fa-chart-simple me-2 text-primary" />
-          Statistics
-        </span>
-        <div className="container-fluid row align-items-around my-2 p-2 justify-content-evenly">
-          {Object.keys(accounts).length === 0 ? (
-            <div>No accounts added</div>
+      <div className="col-10 p-2 my-2 d-flex flex-column align-items-center">
+        {/* searchbar */}
+        <div className="d-flex mb-4">
+          <input
+            type="searchYt"
+            name="searchYt"
+            id="searchYt"
+            placeholder="Search Youtube"
+            className="form-control-lg text-black"
+            style={{
+              borderTopRightRadius: 0,
+              borderBottomRightRadius: 0,
+            }}
+            autoComplete="off"
+            onChange={(e) => setSearchText(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && e.target.value !== "") onSearch();
+            }}
+          />
+          <button
+            className="btn btn-secondary px-3"
+            disabled={searchText === ""}
+            style={{
+              border: "2px solid black",
+              borderLeft: "none",
+              borderTopLeftRadius: 0,
+              borderBottomLeftRadius: 0,
+            }}
+            onClick={onSearch}
+          >
+            <i className="fa-solid fa-magnifying-glass text-black fw-bold fs-5" />
+          </button>
+        </div>
+
+        {/* loader */}
+        <Spinner
+          className="mt-5 position-static"
+          id="homeSearchSpinner"
+          style={{
+            width: "50px",
+            stroke: "crimson",
+          }}
+        />
+
+        {/* search results */}
+        <div className="position-relative">
+          {searchResult.length !== 0 ? (
+            searchResult.map((video) => {
+              const publishedDate = new Date(video.publishedAt);
+              return (
+                <div
+                  className="w-100 p-3 rounded my-2 d-flex align-items-center"
+                  key={video.videoId}
+                  style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+                >
+                  <img
+                    src={video.thumbnail}
+                    alt="thumbnail"
+                    className="rounded"
+                    style={{ width: "250px" }}
+                  />
+                  <div className="mx-3 d-flex flex-column">
+                    <p className="h5 text-white m-0">{video.title}</p>
+                    <p className="fs-6 fw-bold text-warning my-1">
+                      {video.channelTitle}
+                    </p>
+                    <p className="mb-1 text-white-50 fw-bold">
+                      published on {publishedDate.toDateString()}
+                    </p>
+                    <p className="m-0 text-info" style={{ fontSize: "14px" }}>
+                      {video.description}
+                    </p>
+                  </div>
+                  <button
+                    className="btn btn-outline-success ms-auto align-self-start"
+                    onClick={() => setContentToDownload(video)}
+                  >
+                    <i className="fa-solid fa-download" />
+                  </button>
+                </div>
+              );
+            })
           ) : (
-            <>
-              {getYoutubeStats()}
-              {getYoutubeStats()}
-              {getYoutubeStats()}
-              {getYoutubeStats()}
-            </>
+            <></>
           )}
+          {/* {download modal} */}
+          <ContentDownload
+            video={contentToDownload}
+            setVideo={setContentToDownload}
+          />
         </div>
       </div>
     </div>

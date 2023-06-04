@@ -21,6 +21,8 @@
   "homepage": "https://github.com/itsyashpal2021/sociomate#readme",
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.5",
+    "axios": "^1.4.0",
+    "blob": "^0.1.0",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",

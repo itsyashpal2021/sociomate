@@ -40,8 +40,8 @@ export const startSpinner = (node) => {
   spinner.style.display = "block";
 };
 
-export const stopSpinner = (node) => {
+export const stopSpinner = (node,initialColor) => {
   const spinner = node.querySelector(".spinner");
-  node.style.color = "inherit";
+  node.style.color = initialColor;
   spinner.style.display = "none";
 };

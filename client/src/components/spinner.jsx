@@ -7,6 +7,7 @@ export default function Spinner(props) {
       className={"spinner " + props.className}
       viewBox="0 0 50 50"
       style={{ display: "none", ...props.style }}
+      id={props.id}
     >
       <circle
         className="path"

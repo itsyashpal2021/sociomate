@@ -54,7 +54,11 @@ export default function Dashboard() {
       {/* navbar  */}
       <nav
         className="navbar navbar-expand-lg navbar-dark"
-        style={{ backgroundColor: "rgba(0,0,0,0.90)" }}
+        style={{
+          backgroundColor: "rgba(0,0,0,0.90)",
+          position: "sticky",
+          top: 0,
+        }}
       >
         <div className="container-fluid">
           <button
@@ -102,6 +106,15 @@ export default function Dashboard() {
                   id="accounts"
                 >
                   Manage Accounts
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link
+                  to={"/dashboard/about"}
+                  className="nav-link mx-lg-2"
+                  id="about"
+                >
+                  About
                 </Link>
               </li>
               <li className="nav-item">
