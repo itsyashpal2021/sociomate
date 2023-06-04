@@ -1,4 +1,11 @@
 const { google } = require("googleapis");
+const ytdl = require("ytdl-core");
+const fs = require("fs");
+
+const ffmpeg = require("fluent-ffmpeg");
+const ffmpegPath = require("ffmpeg-static");
+ffmpeg.setFfmpegPath(ffmpegPath);
+
 const axios = require("axios");
 require("dotenv").config();
 
@@ -107,10 +114,84 @@ const downloadThumbnail = async (req, res) => {
   }
 };
 
+const downloadVideo = async (req, res) => {
+  try {
+    const url = req.body.url;
+    const info = await ytdl.getInfo(url);
+    const format = info.formats.find((item) => item.qualityLabel === "144p");
+
+    const videoStream = ytdl(url, {
+      filter: "videoonly",
+      format: format,
+    });
+
+    const audioStream = ytdl(url, {
+      filter: "audioonly",
+      quality: "lowestaudio",
+    });
+
+    const mergedFilePath = "temp/merged.mp4";
+    const audioFilePath = "temp/audio.mp3";
+    const videoFilePath = "temp/video.mp4";
+
+    const audioWritableStream = fs.createWriteStream(audioFilePath);
+    audioStream.pipe(audioWritableStream);
+
+    audioStream.on("end", () => {
+      const videoWritableStream = fs.createWriteStream(videoFilePath);
+      videoStream.pipe(videoWritableStream);
+
+      videoStream.on("end", () => {
+        // Create an FFmpeg command
+        const command = ffmpeg();
+
+        // Set input files
+        command.input("temp/audio.mp3");
+        command.input("temp/video.mp4");
+
+        // Merge the audio and video streams
+        command.outputOptions("-c", "copy");
+        command.format("mp4");
+
+        command
+          .save(mergedFilePath)
+          .on("error", (err) => {
+            console.error(
+              "Error occurred while saving to merged:",
+              err.message
+            );
+            throw err;
+          })
+          .on("end", () => {
+            res.setHeader("Content-Type", "video/mp4");
+            fs.stat(mergedFilePath, (err, stats) => {
+              if (err) throw err;
+              res.setHeader("Content-Length", stats.size);
+            });
+
+            const stream = fs.createReadStream(mergedFilePath);
+            stream.pipe(res);
+
+            // Clean up the temporary files after streaming is complete
+            stream.on("end", () => {
+              fs.unlinkSync(mergedFilePath);
+              fs.unlinkSync(audioFilePath);
+              fs.unlinkSync(videoFilePath);
+            });
+          });
+      });
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   searchYtVideo,
   searchYtChannel,
   getChannelStatistics,
   getChannelDetails,
   downloadThumbnail,
+  downloadVideo,
 };

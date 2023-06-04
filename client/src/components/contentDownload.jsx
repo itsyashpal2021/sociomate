@@ -6,19 +6,25 @@ export default function ContentDownload(props) {
   const video = props.video;
 
   const downloadThumbnail = async (e) => {
-    const initialColor = window.getComputedStyle(e.target).borderColor;
-
     const url = video.thumbnail;
     const format = "";
 
     startSpinner(e.target);
 
-    const res = await postToNodeServer("/downloadThumbnail", {
-      url: url,
-    });
+    const res = await postToNodeServer(
+      "/downloadThumbnail",
+      {
+        url: url,
+      },
+      {
+        onDownloadProgress: (progressEvent) => {
+          console.log("Downloaded", progressEvent.loaded);
+        },
+      }
+    );
     if (res.status === 200) {
       var img = new Image();
-      img.src = res.data;
+      img.src = res.data.data;
 
       img.onload = function () {
         var canvas = document.createElement("canvas");
@@ -37,7 +43,35 @@ export default function ContentDownload(props) {
         link.click();
       };
     }
-    stopSpinner(e.target, initialColor);
+    stopSpinner(e.target);
+  };
+
+  const downloadVideo = async (e) => {
+    const url = "https://www.youtube.com/watch?v=" + video.videoId;
+    // const format = "";
+
+    startSpinner(e.target);
+
+    const res = await postToNodeServer(
+      "/downloadVideo",
+      {
+        url: url,
+      },
+      {
+        responseType: "blob",
+        onDownloadProgress: (progressEvent) => {
+          console.log("downloaded ", progressEvent.loaded);
+        },
+      }
+    );
+    if (res.status === 200) {
+      const videoUrl = res.data.url;
+      var link = document.createElement("a");
+      link.href = videoUrl;
+      link.download = video.title;
+      link.click();
+    }
+    stopSpinner(e.target);
   };
 
   return (
@@ -69,7 +103,7 @@ export default function ContentDownload(props) {
         </button>
         <button
           className="btn btn-outline-danger position-relative"
-          onClick={(e) => {}}
+          onClick={downloadVideo}
         >
           <i className="fa-solid fa-arrow-alt-circle-down me-1" />
           Video

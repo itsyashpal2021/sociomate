@@ -134,3 +134,4 @@ token.json
 service-account-key.json
 server.cert
 server.key
+temp/*

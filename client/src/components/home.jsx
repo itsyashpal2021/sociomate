@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { postToNodeServer } from "../utils.js";
 import Spinner from "./spinner";
 import ContentDownload from "./contentDownload.jsx";
@@ -13,7 +14,7 @@ export default function Home() {
 
     const res = await postToNodeServer("/ytSearch", { searchText: searchText });
     if (res.status === 200) {
-      setSearchResult([...res.searchResult]);
+      setSearchResult([...res.data.searchResult]);
     }
     document.getElementById("homeSearchSpinner").style.display = "none";
   };
@@ -82,7 +83,13 @@ export default function Home() {
                     style={{ width: "250px" }}
                   />
                   <div className="mx-3 d-flex flex-column">
-                    <p className="h5 text-white m-0">{video.title}</p>
+                    <Link
+                      to={`https://www.youtube.com/watch?v=${video.videoId}`}
+                      target="_blank"
+                      className="h5 text-white m-0 text-decoration-none"
+                    >
+                      {video.title}
+                    </Link>
                     <p className="fs-6 fw-bold text-warning my-1">
                       {video.channelTitle}
                     </p>

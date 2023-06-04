@@ -20,15 +20,15 @@ export default function Dashboard() {
     const getUserdata = async () => {
       const res = await postToNodeServer("/userData", {});
       if (res.status === 200) {
-        dispatch(setUserData(res.userData));
+        dispatch(setUserData(res.data.userData));
       }
     };
     const checkSession = async () => {
       const res = await postToNodeServer("/checkSession", {});
-      if (res.sessionActive === false) navigate("/login");
+      if (res.data.sessionActive === false) navigate("/login");
       else {
         getUserdata();
-        setSessionActive(res.sessionActive);
+        setSessionActive(res.data.sessionActive);
       }
     };
     checkSession();

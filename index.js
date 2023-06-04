@@ -12,7 +12,11 @@ const {
   signout,
   userData,
 } = require("./posts/user.js");
-const { searchYtVideo, downloadThumbnail } = require("./posts/yt.js");
+const {
+  searchYtVideo,
+  downloadThumbnail,
+  downloadVideo,
+} = require("./posts/yt.js");
 
 require("dotenv").config();
 
@@ -55,6 +59,7 @@ app.post("/userData", userData);
 //yt tools
 app.post("/ytSearch", searchYtVideo);
 app.post("/downloadThumbnail", downloadThumbnail);
+app.post("/downloadVideo", downloadVideo);
 
 //account
 // app.post("/accountSearch", accountSearch);
