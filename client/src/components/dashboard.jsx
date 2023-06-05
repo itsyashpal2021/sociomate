@@ -7,7 +7,7 @@ import { setUserData } from "../store.js";
 import Spinner from "./spinner.jsx";
 
 export default function Dashboard() {
-  const [sessionActive, setSessionActive] = useState(false);
+  const [sessionActive, setSessionActive] = useState(true);
   const userData = useSelector((state) => {
     return state.userData;
   });
@@ -16,23 +16,23 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  useEffect(() => {
-    const getUserdata = async () => {
-      const res = await postToNodeServer("/userData", {});
-      if (res.status === 200) {
-        dispatch(setUserData(res.data.userData));
-      }
-    };
-    const checkSession = async () => {
-      const res = await postToNodeServer("/checkSession", {});
-      if (res.data.sessionActive === false) navigate("/login");
-      else {
-        getUserdata();
-        setSessionActive(res.data.sessionActive);
-      }
-    };
-    checkSession();
-  }, [navigate, dispatch]);
+  // useEffect(() => {
+  //   const getUserdata = async () => {
+  //     const res = await postToNodeServer("/userData", {});
+  //     if (res.status === 200) {
+  //       dispatch(setUserData(res.data.userData));
+  //     }
+  //   };
+  //   const checkSession = async () => {
+  //     const res = await postToNodeServer("/checkSession", {});
+  //     if (res.data.sessionActive === false) navigate("/login");
+  //     else {
+  //       getUserdata();
+  //       setSessionActive(res.data.sessionActive);
+  //     }
+  //   };
+  //   checkSession();
+  // }, [navigate, dispatch]);
 
   useEffect(() => {
     if (!sessionActive) return;
@@ -136,9 +136,9 @@ export default function Dashboard() {
           </div>
         </div>
       </nav>
-      {userData ? (
-        <Outlet />
-      ) : (
+      {/* {userData ? ( */}
+      <Outlet />
+      {/* ) : (
         <div className="container-fluid h-100 d-flex flex-column align-items-center justify-content-center mt-5">
           <Spinner
             className="position-static d-block"
@@ -149,7 +149,7 @@ export default function Dashboard() {
           />
           <span className="text-white-50 h6 mt-1">Loading...</span>
         </div>
-      )}
+      )} */}
     </div>
   ) : (
     <h2 className="text-white text-center fw-bold my-5">Loading dashboard</h2>

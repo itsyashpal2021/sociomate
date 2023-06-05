@@ -1,7 +1,6 @@
 import axios from "axios";
 axios.interceptors.response.use(
   (res) => {
-    // console.log("here1");
     if (res.request.responseType === "blob") {
       const url = URL.createObjectURL(res.data);
       return { status: res.status, data: { url: url } };
@@ -9,7 +8,6 @@ axios.interceptors.response.use(
     return { status: res.status, data: { ...res.data } };
   },
   (error) => {
-    // console.log("in error", error);
     return {
       status: error.response.status,
       message: error.response.data.message,
@@ -37,6 +35,17 @@ export const formatNumberShort = (number) => {
     return (number / 1000).toFixed(2) + "K";
   }
   return number.toString();
+};
+
+export const formatBytes = (bytes) => {
+  if (bytes > 1073741824) {
+    return (bytes / 1073741824).toFixed(2) + " GB";
+  } else if (bytes > 1048576) {
+    return (bytes / 1048576).toFixed(2) + " MB";
+  } else if (bytes > 1024) {
+    return (bytes / 1024).toFixed(2) + " KB";
+  }
+  return bytes.toString() + " B";
 };
 
 export const startSpinner = (node) => {

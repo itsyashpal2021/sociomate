@@ -16,6 +16,7 @@ const {
   searchYtVideo,
   downloadThumbnail,
   downloadVideo,
+  downloadAudio,
 } = require("./posts/yt.js");
 
 require("dotenv").config();
@@ -60,6 +61,7 @@ app.post("/userData", userData);
 app.post("/ytSearch", searchYtVideo);
 app.post("/downloadThumbnail", downloadThumbnail);
 app.post("/downloadVideo", downloadVideo);
+app.post("/downloadAudio", downloadAudio);
 
 //account
 // app.post("/accountSearch", accountSearch);
