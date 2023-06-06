@@ -1,13 +1,11 @@
-const { google } = require("googleapis");
-const ytdl = require("ytdl-core");
-const fs = require("fs");
-
-const ffmpeg = require("fluent-ffmpeg");
-const ffmpegPath = require("ffmpeg-static");
-ffmpeg.setFfmpegPath(ffmpegPath);
-
-const axios = require("axios");
 require("dotenv").config();
+const { google } = require("googleapis");
+const axios = require("axios");
+const ytdl = require("ytdl-core");
+
+const ffmpegPath = require("ffmpeg-static");
+const cp = require("child_process");
+const stream = require("stream");
 
 // Set up YouTube Data API client
 const youtube = google.youtube({
@@ -41,25 +39,43 @@ const searchYtVideo = async (req, res) => {
     const item = response.data.items[0];
     const channelDetails = await getChannelDetails(item.snippet.channelId);
 
-    //available video qualities
+    //available video only qualities
     const formats = (await ytdl.getBasicInfo(url)).formats;
 
-    var videoQualityOptions = formats.map((format) => {
-      return {
-        qualityLabel: format.qualityLabel,
-        size: format.contentLength,
-      };
+    const videoQualityOptions = {};
+    formats.forEach((format) => {
+      const qualityLabel = format.qualityLabel;
+      if (!qualityLabel) return;
+      if (videoQualityOptions[qualityLabel])
+        videoQualityOptions[qualityLabel] = Math.max(
+          videoQualityOptions[qualityLabel],
+          format.contentLength
+        );
+      else videoQualityOptions[qualityLabel] = format.contentLength;
     });
 
-    videoQualityOptions = videoQualityOptions.filter(
-      (format) => format && format.size && format.qualityLabel
-    );
+    //available audio qualities
+    const audioQualityOptions = {};
+    formats.forEach((format) => {
+      const qualityLabel = format.audioQuality;
+      if (!qualityLabel) return;
+      if (audioQualityOptions[qualityLabel])
+        audioQualityOptions[qualityLabel] = Math.max(
+          audioQualityOptions[qualityLabel],
+          format.contentLength
+        );
+      else audioQualityOptions[qualityLabel] = format.contentLength;
+    });
 
-    const uniqueQualityOptions = Array.from(
-      new Set(videoQualityOptions.map((obj) => obj.qualityLabel))
-    ).map((qualityLabel) =>
-      videoQualityOptions.find((obj) => obj.qualityLabel === qualityLabel)
+    // total size after max audio quality
+    const maxAudioQuality = Math.max(
+      ...Object.keys(audioQualityOptions).map(
+        (quality) => audioQualityOptions[quality]
+      )
     );
+    Object.keys(videoQualityOptions).forEach((quality) => {
+      videoQualityOptions[quality] += maxAudioQuality;
+    });
 
     // send info to client
     res.status(200).json({
@@ -73,7 +89,8 @@ const searchYtVideo = async (req, res) => {
         channelTitle: item.snippet.channelTitle,
         channelThumbnail: channelDetails.thumbnail,
         thumbnailSizes: thumbnailSizes,
-        videoQualityOptions: uniqueQualityOptions,
+        videoQualityOptions: videoQualityOptions,
+        audioQualityOptions: audioQualityOptions,
       },
     });
   } catch (error) {
@@ -167,6 +184,54 @@ const downloadThumbnail = async (req, res) => {
   }
 };
 
+const mergeStreams = (audioStream, videoStream, res) => {
+  const result = new stream.PassThrough();
+  let ffmpegProcess = cp.spawn(
+    ffmpegPath,
+    [
+      // supress non-crucial messages
+      "-loglevel",
+      "8",
+      "-hide_banner",
+      // input audio and video by pipe
+      "-i",
+      "pipe:3",
+      "-i",
+      "pipe:4",
+      // map audio and video correspondingly
+      "-map",
+      "0:a",
+      "-map",
+      "1:v",
+      // no need to change the codec
+      "-c",
+      "copy",
+      // output mp4 and pipe
+      "-f",
+      "matroska",
+      "pipe:5",
+    ],
+    {
+      // no popup window for Windows users
+      windowsHide: true,
+      stdio: [
+        // silence stdin/out, forward stderr,
+        "inherit",
+        "inherit",
+        "inherit",
+        // and pipe audio, video, output
+        "pipe",
+        "pipe",
+        "pipe",
+      ],
+    }
+  );
+  audioStream.pipe(ffmpegProcess.stdio[3]);
+  videoStream.pipe(ffmpegProcess.stdio[4]);
+  ffmpegProcess.stdio[5].pipe(result);
+  result.pipe(res);
+};
+
 const downloadVideo = async (req, res) => {
   try {
     const url = req.body.url;
@@ -187,57 +252,8 @@ const downloadVideo = async (req, res) => {
       quality: "highestaudio",
     });
 
-    const mergedFilePath = "temp/merged.mp4";
-    const audioFilePath = "temp/audio.mp3";
-    const videoFilePath = "temp/video.mp4";
-
-    const audioWritableStream = fs.createWriteStream(audioFilePath);
-    audioStream.pipe(audioWritableStream);
-
-    audioStream.on("end", () => {
-      const videoWritableStream = fs.createWriteStream(videoFilePath);
-      videoStream.pipe(videoWritableStream);
-
-      videoStream.on("end", () => {
-        // Create an FFmpeg command
-        const command = ffmpeg();
-
-        // Set input files
-        command.input("temp/audio.mp3");
-        command.input("temp/video.mp4");
-
-        // Merge the audio and video streams
-        command.outputOptions("-c", "copy");
-        command.format("mp4");
-
-        command
-          .save(mergedFilePath)
-          .on("error", (err) => {
-            console.error(
-              "Error occurred while saving to merged:",
-              err.message
-            );
-            throw err;
-          })
-          .on("end", () => {
-            res.setHeader("Content-Type", "video/mp4");
-            fs.stat(mergedFilePath, (err, stats) => {
-              if (err) throw err;
-              res.setHeader("Content-Length", stats.size);
-            });
-
-            const stream = fs.createReadStream(mergedFilePath);
-            stream.pipe(res);
-
-            // Clean up the temporary files after streaming is complete
-            stream.on("end", () => {
-              fs.unlinkSync(mergedFilePath);
-              fs.unlinkSync(audioFilePath);
-              fs.unlinkSync(videoFilePath);
-            });
-          });
-      });
-    });
+    res.setHeader("content-type", "video/mp4");
+    mergeStreams(audioStream, videoStream, res);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: error.message });
@@ -247,17 +263,19 @@ const downloadVideo = async (req, res) => {
 const downloadAudio = async (req, res) => {
   try {
     const url = req.body.url;
+    const audioQuality = req.body.audioQuality;
+
     const audioStream = ytdl(url, {
       filter: "audioonly",
-      quality: req.body.quality,
+      quality: audioQuality,
     });
 
     res.setHeader("content-type", "audio/mp3");
-    audioStream.pipe(res);
     audioStream.on("error", (err) => {
-      console.log("Error while sending audio");
+      console.log("Error while sending audio", err);
       throw err;
     });
+    audioStream.pipe(res);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

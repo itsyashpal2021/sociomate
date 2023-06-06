@@ -14,7 +14,6 @@ export default function ContentDownload(props) {
   const [thumbnailSize, setThumbnailSize] = useState(
     video.thumbnailSizes.default
   );
-  const [videoSize, setVideoSize] = useState(video.videoQualityOptions[0].size);
 
   const thumbnailQualityOptions = Object.keys(video.thumbnailSizes).map(
     (key) => {
@@ -25,17 +24,33 @@ export default function ContentDownload(props) {
     }
   );
 
-  const videoQualityOptions = video.videoQualityOptions.map((option) => {
-    return {
-      label: option.qualityLabel,
-      value: option.qualityLabel,
-    };
-  });
+  const videoQualityOptions = Object.keys(video.videoQualityOptions).map(
+    (quality) => {
+      return {
+        label: quality,
+        value: quality,
+      };
+    }
+  );
 
-  const audioQualityOptions = [
-    { label: "Low", value: "lowestaudio" },
-    { label: "High", value: "highestaudio" },
-  ];
+  const [videoSize, setVideoSize] = useState(
+    video.videoQualityOptions[videoQualityOptions[0].value]
+  );
+
+  const [audioSize, setAudioSize] = useState(
+    video.audioQualityOptions[Object.keys(video.audioQualityOptions)[0]]
+  );
+
+  const audioQualityOptions = Object.keys(video.audioQualityOptions).map(
+    (audioQuality) => {
+      var quality = audioQuality.split("AUDIO_QUALITY_")[1].toLowerCase();
+      quality === "medium" ? (quality = "high") : (quality = "low");
+      return {
+        label: quality,
+        value: quality + "estaudio",
+      };
+    }
+  );
 
   const downloadThumbnail = async (e) => {
     const id = video.videoId;
@@ -51,7 +66,16 @@ export default function ContentDownload(props) {
       },
       {
         onDownloadProgress: (progressEvent) => {
-          console.log(progressEvent);
+          e.target.querySelector(".spinner").style.display = "none";
+          const progress =
+            Math.min(
+              99,
+              Math.floor((progressEvent.loaded / thumbnailSize) * 100).toFixed(
+                0
+              )
+            ) + "%";
+          console.log(progress);
+          e.target.querySelector(".downloadProgress").innerHTML = progress;
         },
       }
     );
@@ -64,6 +88,7 @@ export default function ContentDownload(props) {
     }
 
     stopSpinner(e.target);
+    e.target.querySelector(".downloadProgress").innerHTML = "";
     e.target.disabled = false;
   };
 
@@ -82,7 +107,13 @@ export default function ContentDownload(props) {
       {
         responseType: "blob",
         onDownloadProgress: (progressEvent) => {
-          console.log(progressEvent);
+          e.target.querySelector(".spinner").style.display = "none";
+          const progress =
+            Math.min(
+              99,
+              Math.floor((progressEvent.loaded / videoSize) * 100).toFixed(0)
+            ) + "%";
+          e.target.querySelector(".downloadProgress").innerHTML = progress;
         },
       }
     );
@@ -94,6 +125,7 @@ export default function ContentDownload(props) {
       link.click();
     }
     stopSpinner(e.target);
+    e.target.querySelector(".downloadProgress").innerHTML = "";
     e.target.disabled = false;
   };
 
@@ -106,12 +138,19 @@ export default function ContentDownload(props) {
       "/downloadAudio",
       {
         url: url,
-        quality: document.getElementById("audioQualityDropdown").dataset.value,
+        audioQuality: document.getElementById("audioQualityDropdown").dataset
+          .value,
       },
       {
         responseType: "blob",
         onDownloadProgress: (progressEvent) => {
-          console.log(progressEvent);
+          e.target.querySelector(".spinner").style.display = "none";
+          const progress =
+            Math.min(
+              99,
+              Math.floor((progressEvent.loaded / audioSize) * 100).toFixed(0)
+            ) + "%";
+          e.target.querySelector(".downloadProgress").innerHTML = progress;
         },
       }
     );
@@ -123,6 +162,7 @@ export default function ContentDownload(props) {
       link.click();
     }
     stopSpinner(e.target);
+    e.target.querySelector(".downloadProgress").innerHTML = "";
     e.target.disabled = false;
   };
 
@@ -150,12 +190,22 @@ export default function ContentDownload(props) {
                 {formatBytes(thumbnailSize)}
               </span>
               <button
-                className="btn btn-success ms-4 position-relative"
+                className="btn btn-success ms-4 position-relative opacity-100"
                 style={{ height: "fit-content" }}
                 onClick={downloadThumbnail}
               >
                 Download
                 <Spinner />
+                <span
+                  className="d-block fs-5 fw-bold text-center w-100 text-info downloadProgress"
+                  style={{
+                    position: "absolute",
+                    left: "50%",
+                    top: "50%",
+                    transform: "translate(-50%, -50%)",
+                    color: "rgb(13, 202, 240)",
+                  }}
+                ></span>
               </button>
             </div>
           </div>
@@ -175,10 +225,7 @@ export default function ContentDownload(props) {
               id="videoQualityDropdown"
               optionHoverColor="rgba(0,0,0,0.45)"
               onValueChange={(value) => {
-                const size = video.videoQualityOptions.find(
-                  (el) => el.qualityLabel === value
-                ).size;
-                setVideoSize(size);
+                setVideoSize(video.videoQualityOptions[value]);
               }}
             />
           </div>
@@ -189,12 +236,22 @@ export default function ContentDownload(props) {
                 {formatBytes(videoSize)}
               </span>
               <button
-                className="btn btn-success ms-4 position-relative"
+                className="btn btn-success ms-4 position-relative opacity-100"
                 style={{ height: "fit-content" }}
                 onClick={downloadVideo}
               >
                 Download
                 <Spinner />
+                <span
+                  className="d-block fs-5 fw-bold text-center w-100 downloadProgress"
+                  style={{
+                    position: "absolute",
+                    left: "50%",
+                    top: "50%",
+                    transform: "translate(-50%, -50%)",
+                    color: "rgb(255 151 39)",
+                  }}
+                ></span>
               </button>
             </div>
           </div>
@@ -213,22 +270,38 @@ export default function ContentDownload(props) {
               options={audioQualityOptions}
               id="audioQualityDropdown"
               optionHoverColor="rgba(0,0,0,0.45)"
-              onValueChange={(value) => {}}
+              onValueChange={(value) => {
+                let key = value.split("estaudio")[0];
+                key === "low"
+                  ? (key = "AUDIO_QUALITY_LOW")
+                  : (key = "AUDIO_QUALITY_MEDIUM");
+                setAudioSize(video.audioQualityOptions[key]);
+              }}
             />
           </div>
           <div className="d-flex flex-column ms-4">
             <span className="text-white-50 fs-6 fw-bold">Size</span>
             <div className="d-flex">
               <span className="text-warning py-2">
-                {/* {formatBytes(videoSize)} */}
+                {formatBytes(audioSize)}
               </span>
               <button
-                className="btn btn-success ms-4 position-relative"
+                className="btn btn-success ms-4 position-relative opacity-100"
                 style={{ height: "fit-content" }}
                 onClick={downloadAudio}
               >
                 Download
                 <Spinner />
+                <span
+                  className="d-block fs-5 fw-bold text-center w-100 downloadProgress"
+                  style={{
+                    position: "absolute",
+                    left: "50%",
+                    top: "50%",
+                    transform: "translate(-50%, -50%)",
+                    color: "#fffb2d",
+                  }}
+                ></span>
               </button>
             </div>
           </div>
