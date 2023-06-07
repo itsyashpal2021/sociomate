@@ -6,56 +6,32 @@ import {
   RouterProvider,
   useRouteError,
 } from "react-router-dom";
-import { Register } from "./components/register";
-import { Login } from "./components/login";
-import { ForgotPassword } from "./components/forgotPassword";
 import Dashboard from "./components/dashboard";
-import Accounts from "./components/accounts";
-import { Provider } from "react-redux";
-import store from "./store.js";
-import Home from "./components/home";
+import ytDownloader from "./components/ytDownloader";
+import About from "./components/about";
+import YtDownloader from "./components/ytDownloader";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Navigate to={"/dashboard/home"} />,
-    errorElement: <ErrorBoundry />,
-  },
-  {
-    path: "/login",
-    element: <Login />,
-  },
-  {
-    path: "/register",
-    element: <Register />,
-  },
-  {
-    path: "/forgotPassword",
-    element: <ForgotPassword />,
-  },
-  {
-    path: "/dashboard",
     element: <Dashboard />,
+    errorElement: <ErrorBoundry />,
     children: [
       {
-        path: "/dashboard/",
-        element: <Navigate to="/dashboard/home" />,
+        path: "/",
+        element: <Navigate to="/ytDownloader" />,
       },
       {
-        path: "/dashboard/home",
-        element: <Home />,
+        path: "/ytDownloader",
+        element: <YtDownloader />,
       },
       {
-        path: "/dashboard/accounts",
-        element: <Accounts />,
+        path: "/channels",
+        element: <h2>Channel stats</h2>,
       },
       {
-        path: "/dashboard/profile",
-        element: <h1>This is profile</h1>,
-      },
-      {
-        path: "/dashboard/about",
-        element: <h1>This is about</h1>,
+        path: "/about",
+        element: <About />,
       },
     ],
   },
@@ -85,8 +61,6 @@ window.addEventListener("resize", () => {
 
 ReactDOM.createRoot(root).render(
   <React.StrictMode>
-    <Provider store={store}>
-      <RouterProvider router={router} />
-    </Provider>
+    <RouterProvider router={router} />
   </React.StrictMode>
 );

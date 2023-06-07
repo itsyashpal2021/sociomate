@@ -15,7 +15,8 @@ axios.interceptors.response.use(
   }
 );
 
-const nodeURL = "https://192.168.223.124:5000";
+// const nodeURL = "https://192.168.223.124:5000";
+const nodeURL = "https://localhost:5000";
 
 export const postToNodeServer = async (route, body, options = {}) => {
   // console.log("in post");

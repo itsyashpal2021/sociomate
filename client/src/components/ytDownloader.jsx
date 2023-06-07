@@ -1,10 +1,10 @@
 import React, { useContext, useState } from "react";
 import { formatNumberShort, postToNodeServer } from "../utils.js";
-import Spinner from "./spinner";
+import Spinner from "./spinner.jsx";
 import ContentDownload from "./contentDownload.jsx";
 import { useOutletContext } from "react-router-dom";
 
-export default function Home() {
+export default function YtDownloader() {
   const [searchText, setSearchText] = useState("");
   const [searchResult, setSearchResult] = useState(undefined);
   const windowWidth = useOutletContext();

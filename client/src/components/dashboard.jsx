@@ -1,49 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { postToNodeServer } from "../utils";
-import { useNavigate, Link, Outlet, useLocation } from "react-router-dom";
+import { Link, Outlet, useLocation } from "react-router-dom";
 import "../css/dashboard.css";
-import { useSelector, useDispatch } from "react-redux";
-import { setUserData } from "../store.js";
-import Spinner from "./spinner.jsx";
+import "../css/form.css";
 
 export default function Dashboard() {
-  const [sessionActive, setSessionActive] = useState(true);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-  const userData = useSelector((state) => {
-    return state.userData;
-  });
-  const dispatch = useDispatch();
-
-  const navigate = useNavigate();
   const location = useLocation();
 
-  // useEffect(() => {
-  //   const getUserdata = async () => {
-  //     const res = await postToNodeServer("/userData", {});
-  //     if (res.status === 200) {
-  //       dispatch(setUserData(res.data.userData));
-  //     }
-  //   };
-  //   const checkSession = async () => {
-  //     const res = await postToNodeServer("/checkSession", {});
-  //     if (res.data.sessionActive === false) navigate("/login");
-  //     else {
-  //       getUserdata();
-  //       setSessionActive(res.data.sessionActive);
-  //     }
-  //   };
-  //   checkSession();
-  // }, [navigate, dispatch]);
-
   useEffect(() => {
-    if (!sessionActive) return;
-    [...document.getElementsByClassName("active")].forEach((el) => {
-      el.classList.remove("active");
-    });
     const path = location.pathname;
-    const navLink = document.getElementById(path.split("/dashboard/")[1]);
+    const activeNavlink = document.getElementsByClassName("active")[0];
+    if (activeNavlink) activeNavlink.classList.remove("active");
+
+    const navLink = document.getElementById(path.split("/")[1]);
     if (navLink) navLink.classList.add("active");
-  }, [location.pathname, sessionActive]);
+  }, [location.pathname]);
 
   useEffect(() => {
     window.addEventListener("resize", () => {
@@ -51,12 +22,7 @@ export default function Dashboard() {
     });
   }, []);
 
-  const signout = async () => {
-    const res = await postToNodeServer("/signout", {});
-    if (res.status === 200) navigate("/login");
-  };
-
-  return sessionActive ? (
+  return (
     <div className="w-100 h-100 align-self-start">
       {/* navbar  */}
       <nav
@@ -99,66 +65,32 @@ export default function Dashboard() {
             <ul className="navbar-nav mx-auto mb-2 mb-lg-0">
               <li className="nav-item">
                 <Link
-                  to={"/dashboard/home"}
+                  to={"/ytDownloader"}
                   className="nav-link mx-lg-2"
-                  id="home"
+                  id="ytDownloader"
                 >
-                  Home
+                  Yt-Downloader
                 </Link>
               </li>
               <li className="nav-item">
                 <Link
-                  to={"/dashboard/accounts"}
+                  to={"/channels"}
                   className="nav-link mx-lg-2"
-                  id="accounts"
+                  id="channels"
                 >
-                  Manage Accounts
+                  Channel Stats
                 </Link>
               </li>
               <li className="nav-item">
-                <Link
-                  to={"/dashboard/about"}
-                  className="nav-link mx-lg-2"
-                  id="about"
-                >
+                <Link to={"/about"} className="nav-link mx-lg-2" id="about">
                   About
                 </Link>
               </li>
-              <li className="nav-item">
-                <Link
-                  to={"/dashboard/profile"}
-                  className="nav-link mx-lg-2"
-                  id="profile"
-                >
-                  My Profile
-                </Link>
-              </li>
             </ul>
-            <button
-              className="btn btn-outline-danger fw-bold"
-              onClick={signout}
-            >
-              sign out
-            </button>
           </div>
         </div>
       </nav>
-      {/* {userData ? ( */}
       <Outlet context={windowWidth} />
-      {/* ) : (
-        <div className="container-fluid h-100 d-flex flex-column align-items-center justify-content-center mt-5">
-          <Spinner
-            className="position-static d-block"
-            style={{
-              width: "50px",
-              stroke: "#111153",
-            }}
-          />
-          <span className="text-white-50 h6 mt-1">Loading...</span>
-        </div>
-      )} */}
     </div>
-  ) : (
-    <h2 className="text-white text-center fw-bold my-5">Loading dashboard</h2>
   );
 }

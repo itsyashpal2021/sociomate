@@ -43,6 +43,8 @@ function CustomDropdown(props) {
                 parentDiv.querySelector("span").innerHTML = option.label;
                 parentDiv.dataset.value = option.value;
                 if (props.onValueChange) props.onValueChange(option.value);
+                parentDiv.querySelector(".dropdownOptions").style.visibility =
+                  "hidden";
               }}
               onMouseEnter={(e) => {
                 e.target.style.backgroundColor = props.optionHoverColor;
