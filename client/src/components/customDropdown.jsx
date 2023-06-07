@@ -10,18 +10,20 @@ function CustomDropdown(props) {
       id={props.id}
       className="user-select-none"
       data-value={selectedOption.value} //custom attribute
-      onClick={() => {
-        const optionDiv = document
-          .getElementById(props.id)
-          .querySelector(".dropdownOptions");
-
-        optionDiv.style.visibility === "hidden"
-          ? (optionDiv.style.visibility = "visible")
-          : (optionDiv.style.visibility = "hidden");
-      }}
       style={{ width: "max-content", cursor: "context-menu" }}
     >
-      <div className="p-2 rounded border border-2 border-white text-white d-flex align-items-center w-100">
+      <div
+        className="p-2 rounded border border-2 border-white text-white d-flex align-items-center w-100"
+        onClick={() => {
+          const optionDiv = document
+            .getElementById(props.id)
+            .querySelector(".dropdownOptions");
+
+          optionDiv.style.visibility === "hidden"
+            ? (optionDiv.style.visibility = "visible")
+            : (optionDiv.style.visibility = "hidden");
+        }}
+      >
         <span className="me-2">{selectedOption.label}</span>
         <i className="fa fa-caret-down fa-solid ms-auto" />
       </div>

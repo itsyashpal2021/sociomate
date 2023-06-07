@@ -1,7 +1,7 @@
 import axios from "axios";
 axios.interceptors.response.use(
   (res) => {
-    if (res.request.responseType === "blob") {
+    if (res.request.responseType && res.request.responseType === "blob") {
       const url = URL.createObjectURL(res.data);
       return { status: res.status, data: { url: url } };
     }
@@ -15,7 +15,7 @@ axios.interceptors.response.use(
   }
 );
 
-const nodeURL = "https://localhost:5000";
+const nodeURL = "https://192.168.223.124:5000";
 
 export const postToNodeServer = async (route, body, options = {}) => {
   // console.log("in post");
