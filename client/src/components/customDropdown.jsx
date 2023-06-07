@@ -28,7 +28,7 @@ function CustomDropdown(props) {
 
       {/* options */}
       <div
-        className="dropdownOptions text-white d-flex flex-column border border-2 rounded mt-1 w-100"
+        className="dropdownOptions text-white d-flex flex-column border border-2 rounded my-1 w-100"
         style={{ visibility: "hidden" }}
       >
         {props.options.map((option) => {

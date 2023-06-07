@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { formatNumberShort, postToNodeServer } from "../utils.js";
 import Spinner from "./spinner";
 import ContentDownload from "./contentDownload.jsx";
+import { useOutletContext } from "react-router-dom";
 
 export default function Home() {
   const [searchText, setSearchText] = useState("");
   const [searchResult, setSearchResult] = useState(undefined);
+  const windowWidth = useOutletContext();
 
   const isValidYTUrl = (url) => {
     // https://youtu.be/yyzLruH9aEw
@@ -32,8 +34,8 @@ export default function Home() {
   };
 
   return (
-    <div className="container-fluid row justify-content-center">
-      <div className="col-10 p-2 my-2 d-flex flex-column align-items-center">
+    <div className="container-fluid row justify-content-center m-0 p-0">
+      <div className="col-lg-11 col-12 p-2 my-2 d-flex flex-column align-items-center">
         {/* searchbar */}
 
         <div className="d-flex mb-4 align-items-center w-100">
@@ -99,17 +101,20 @@ export default function Home() {
           ) : (
             <>
               <div
-                className="w-100 p-3 rounded my-2 d-flex align-items-center"
+                className="w-100 p-3 rounded my-2 d-flex align-items-center justify-content-center flex-md-nowrap flex-wrap"
                 key={searchResult.videoId}
                 style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
               >
                 <img
                   src={searchResult.thumbnail}
                   alt="thumbnail"
-                  className="rounded"
-                  style={{ width: "250px" }}
+                  className="rounded mb-md-0 mb-3"
+                  style={{ width: windowWidth >= 768 ? "250px" : "100%" }}
                 />
-                <div className="mx-3 d-flex flex-column">
+                <div
+                  className="mx-md-3 d-flex flex-column"
+                  style={{ maxWidth: "100%" }}
+                >
                   <p className="h5 text-white m-0 text-decoration-none">
                     {searchResult.title}
                   </p>
@@ -146,7 +151,7 @@ export default function Home() {
                   </p>
                 </div>
                 <button
-                  className="btn btn-danger ms-auto me-2"
+                  className="btn btn-danger me-md-2 mt-4 mx-md-auto my-md-0"
                   style={{ whiteSpace: "nowrap" }}
                   onClick={() => {
                     const url = `https://www.youtube.com/watch?v=${searchResult.videoId}`;

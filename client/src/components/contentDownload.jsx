@@ -54,8 +54,10 @@ export default function ContentDownload(props) {
 
   const downloadThumbnail = async (e) => {
     const id = video.videoId;
-    e.target.disabled = true;
-    startSpinner(e.target);
+    const button = e.currentTarget; // always gives the element which event listener is attached to
+
+    button.disabled = true;
+    startSpinner(button);
 
     const res = await postToNodeServer(
       "/downloadThumbnail",
@@ -66,7 +68,7 @@ export default function ContentDownload(props) {
       },
       {
         onDownloadProgress: (progressEvent) => {
-          e.target.querySelector(".spinner").style.display = "none";
+          button.querySelector(".spinner").style.display = "none";
           const progress =
             Math.min(
               99,
@@ -74,8 +76,7 @@ export default function ContentDownload(props) {
                 0
               )
             ) + "%";
-          console.log(progress);
-          e.target.querySelector(".downloadProgress").innerHTML = progress;
+          button.querySelector(".downloadProgress").innerHTML = progress;
         },
       }
     );
@@ -87,15 +88,17 @@ export default function ContentDownload(props) {
       link.click();
     }
 
-    stopSpinner(e.target);
-    e.target.querySelector(".downloadProgress").innerHTML = "";
-    e.target.disabled = false;
+    stopSpinner(button);
+    button.querySelector(".downloadProgress").innerHTML = "";
+    button.disabled = false;
   };
 
   const downloadVideo = async (e) => {
     const url = "https://www.youtube.com/watch?v=" + video.videoId;
-    e.target.disabled = true;
-    startSpinner(e.target);
+    const button = e.currentTarget;
+
+    button.disabled = true;
+    startSpinner(button);
 
     const res = await postToNodeServer(
       "/downloadVideo",
@@ -107,13 +110,13 @@ export default function ContentDownload(props) {
       {
         responseType: "blob",
         onDownloadProgress: (progressEvent) => {
-          e.target.querySelector(".spinner").style.display = "none";
+          button.querySelector(".spinner").style.display = "none";
           const progress =
             Math.min(
               99,
               Math.floor((progressEvent.loaded / videoSize) * 100).toFixed(0)
             ) + "%";
-          e.target.querySelector(".downloadProgress").innerHTML = progress;
+          button.querySelector(".downloadProgress").innerHTML = progress;
         },
       }
     );
@@ -124,15 +127,17 @@ export default function ContentDownload(props) {
       link.download = video.title + ".mp4";
       link.click();
     }
-    stopSpinner(e.target);
-    e.target.querySelector(".downloadProgress").innerHTML = "";
-    e.target.disabled = false;
+    stopSpinner(button);
+    button.querySelector(".downloadProgress").innerHTML = "";
+    button.disabled = false;
   };
 
   const downloadAudio = async (e) => {
     const url = "https://www.youtube.com/watch?v=" + video.videoId;
-    e.target.disabled = true;
-    startSpinner(e.target);
+    const button = e.currentTarget;
+
+    button.disabled = true;
+    startSpinner(button);
 
     const res = await postToNodeServer(
       "/downloadAudio",
@@ -144,13 +149,13 @@ export default function ContentDownload(props) {
       {
         responseType: "blob",
         onDownloadProgress: (progressEvent) => {
-          e.target.querySelector(".spinner").style.display = "none";
+          button.querySelector(".spinner").style.display = "none";
           const progress =
             Math.min(
               99,
               Math.floor((progressEvent.loaded / audioSize) * 100).toFixed(0)
             ) + "%";
-          e.target.querySelector(".downloadProgress").innerHTML = progress;
+          button.querySelector(".downloadProgress").innerHTML = progress;
         },
       }
     );
@@ -161,15 +166,15 @@ export default function ContentDownload(props) {
       link.download = video.title + ".mp3";
       link.click();
     }
-    stopSpinner(e.target);
-    e.target.querySelector(".downloadProgress").innerHTML = "";
-    e.target.disabled = false;
+    stopSpinner(button);
+    button.querySelector(".downloadProgress").innerHTML = "";
+    button.disabled = false;
   };
 
   return (
     <div className="row container-fluid mt-3">
       {/* thumbnail download  */}
-      <div className="col-3">
+      <div className="d-flex flex-column align-items-center col-xl-3 col-sm-6 ">
         <p className="text-info h5">Download Thumbnail:</p>
         <div className="d-flex">
           <div className="d-flex flex-column">
@@ -194,7 +199,10 @@ export default function ContentDownload(props) {
                 style={{ height: "fit-content" }}
                 onClick={downloadThumbnail}
               >
-                Download
+                <span className="d-xxl-block d-xl-none d-md-block d-sm-none ">
+                  Download
+                </span>
+                <i className="fa-solid fa-arrow-down d-xxl-none d-xl-block d-md-none d-sm-block  d-none" />
                 <Spinner />
                 <span
                   className="d-block fs-5 fw-bold text-center w-100 text-info downloadProgress"
@@ -213,7 +221,7 @@ export default function ContentDownload(props) {
       </div>
 
       {/* video download  */}
-      <div className="col-3">
+      <div className="d-flex flex-column align-items-center col-xl-3 col-sm-6 ">
         <p className="h5" style={{ color: "rgb(255 151 39)" }}>
           Download Video:
         </p>
@@ -240,7 +248,10 @@ export default function ContentDownload(props) {
                 style={{ height: "fit-content" }}
                 onClick={downloadVideo}
               >
-                Download
+                <span className="d-xxl-block d-xl-none d-md-block d-sm-none ">
+                  Download
+                </span>
+                <i className="fa-solid fa-arrow-down d-xxl-none d-xl-block d-md-none d-sm-block  d-none" />
                 <Spinner />
                 <span
                   className="d-block fs-5 fw-bold text-center w-100 downloadProgress"
@@ -259,7 +270,7 @@ export default function ContentDownload(props) {
       </div>
 
       {/* audio download  */}
-      <div className="col-3">
+      <div className="d-flex flex-column align-items-center col-xl-3 col-sm-6 ">
         <p className="h5" style={{ color: "#fffb2d" }}>
           Download Audio:
         </p>
@@ -290,7 +301,10 @@ export default function ContentDownload(props) {
                 style={{ height: "fit-content" }}
                 onClick={downloadAudio}
               >
-                Download
+                <span className="d-xxl-block d-xl-none d-md-block d-sm-none ">
+                  Download
+                </span>
+                <i className="fa-solid fa-arrow-down d-xxl-none d-xl-block d-md-none d-sm-block  d-none" />
                 <Spinner />
                 <span
                   className="d-block fs-5 fw-bold text-center w-100 downloadProgress"

@@ -8,6 +8,7 @@ import Spinner from "./spinner.jsx";
 
 export default function Dashboard() {
   const [sessionActive, setSessionActive] = useState(true);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const userData = useSelector((state) => {
     return state.userData;
   });
@@ -43,6 +44,12 @@ export default function Dashboard() {
     const navLink = document.getElementById(path.split("/dashboard/")[1]);
     if (navLink) navLink.classList.add("active");
   }, [location.pathname, sessionActive]);
+
+  useEffect(() => {
+    window.addEventListener("resize", () => {
+      setWindowWidth(window.innerWidth);
+    });
+  }, []);
 
   const signout = async () => {
     const res = await postToNodeServer("/signout", {});
@@ -137,7 +144,7 @@ export default function Dashboard() {
         </div>
       </nav>
       {/* {userData ? ( */}
-      <Outlet />
+      <Outlet context={windowWidth} />
       {/* ) : (
         <div className="container-fluid h-100 d-flex flex-column align-items-center justify-content-center mt-5">
           <Spinner
