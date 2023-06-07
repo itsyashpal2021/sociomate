@@ -10,6 +10,7 @@ const {
   downloadVideo,
   downloadAudio,
 } = require("./posts/yt.js");
+const { searchYtChannel } = require("./posts/yt.js");
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -17,11 +18,14 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors({ credentials: true, origin: true }));
 
-//yt tools
-app.post("/ytSearch", searchYtVideo);
+//yt downloader
+app.post("/ytVideoSearch", searchYtVideo);
 app.post("/downloadThumbnail", downloadThumbnail);
 app.post("/downloadVideo", downloadVideo);
 app.post("/downloadAudio", downloadAudio);
+
+//channel stats
+app.post("/ytChannelSearch", searchYtChannel);
 
 //serving static files in prod
 if (process.env.NODE_ENV === "production") {

@@ -7,9 +7,9 @@ import {
   useRouteError,
 } from "react-router-dom";
 import Dashboard from "./components/dashboard";
-import ytDownloader from "./components/ytDownloader";
 import About from "./components/about";
 import YtDownloader from "./components/ytDownloader";
+import Channels from "./components/channels";
 
 const router = createBrowserRouter([
   {
@@ -27,7 +27,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/channels",
-        element: <h2>Channel stats</h2>,
+        element: <Channels />,
       },
       {
         path: "/about",
@@ -54,9 +54,9 @@ function ErrorBoundry() {
 }
 
 const root = document.getElementById("root");
-root.style.minHeight = window.innerHeight + "px";
+root.style.height = window.innerHeight + "px";
 window.addEventListener("resize", () => {
-  root.style.minHeight = window.innerHeight + "px";
+  root.style.height = window.innerHeight + "px";
 });
 
 ReactDOM.createRoot(root).render(

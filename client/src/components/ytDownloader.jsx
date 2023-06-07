@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { formatNumberShort, postToNodeServer } from "../utils.js";
 import Spinner from "./spinner.jsx";
 import ContentDownload from "./contentDownload.jsx";
@@ -22,7 +22,7 @@ export default function YtDownloader() {
   const onSearch = async () => {
     document.getElementById("homeSearchSpinner").style.display = "block";
     setSearchResult(undefined);
-    const res = await postToNodeServer("/ytSearch", {
+    const res = await postToNodeServer("/ytVideoSearch", {
       url: searchText,
     });
     if (res.status === 200) {

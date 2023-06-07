@@ -99,42 +99,6 @@ const searchYtVideo = async (req, res) => {
   }
 };
 
-// channel search result
-const searchYtChannel = async (channelName, res) => {
-  try {
-    const response = await youtube.search.list({
-      part: "snippet",
-      q: channelName,
-      type: "channel",
-      maxResults: 5,
-    });
-    const searchResult = response.data.items.map((item) => {
-      return {
-        channelId: item.snippet.channelId,
-        channelTitle: item.snippet.channelTitle,
-        description: item.snippet.description,
-        thumbnail: item.snippet.thumbnails.default.url,
-      };
-    });
-    return res.status(200).json({ searchResults: searchResult });
-  } catch (error) {
-    const err = error.response.data.error;
-    res.status(err.code).json(err.message);
-  }
-};
-
-const getChannelStatistics = async (channelId) => {
-  try {
-    const response = await youtube.channels.list({
-      part: ["statistics"],
-      id: [channelId],
-    });
-    return response.data.items[0].statistics;
-  } catch (error) {
-    throw error.response.data.error;
-  }
-};
-
 const getChannelDetails = async (channelId) => {
   try {
     const response = await youtube.channels.list({
@@ -281,11 +245,53 @@ const downloadAudio = async (req, res) => {
   }
 };
 
+// channel search result
+const getChannelStatistics = async (channelId) => {
+  try {
+    const response = await youtube.channels.list({
+      part: ["statistics"],
+      id: [channelId],
+    });
+    return response.data.items[0].statistics;
+  } catch (error) {
+    throw error.response.data.error;
+  }
+};
+
+const searchYtChannel = async (req, res) => {
+  const channelName = req.body.channelName;
+  try {
+    const response = await youtube.search.list({
+      part: "snippet",
+      q: channelName,
+      type: "channel",
+      maxResults: 5,
+    });
+
+    const searchResult = await Promise.all(
+      response.data.items.map(async (item) => {
+        const stats = await getChannelStatistics(item.snippet.channelId);
+        return {
+          channelId: item.snippet.channelId,
+          channelTitle: item.snippet.channelTitle,
+          description: item.snippet.description,
+          thumbnail: item.snippet.thumbnails.high.url,
+          ...stats,
+        };
+      })
+    );
+
+    return res.status(200).json({ searchResults: searchResult });
+  } catch (error) {
+    const err = error.response.data.error;
+    res.status(err.code).json(err.message);
+  }
+};
+
 module.exports = {
   searchYtVideo,
   searchYtChannel,
   getChannelStatistics,
-  getChannelDetails,
   downloadThumbnail,
   downloadVideo,
   downloadAudio,
