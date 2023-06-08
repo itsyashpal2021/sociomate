@@ -20,7 +20,7 @@ export default function Channels() {
   };
 
   return (
-    <div className="container-fluid m-0 p-2 h-100">
+    <div className="container-fluid m-0 p-2">
       {/* Searchbard */}
       <div
         className="d-flex mb-4 justify-content-center"
@@ -57,10 +57,7 @@ export default function Channels() {
         </button>
       </div>
 
-      <div
-        className="col-lg-9 col-12 p-2 my-2 d-flex flex-column align-items-center mx-auto"
-        style={{ maxHeight: "100%", overflowY: "scroll" }}
-      >
+      <div className="col-lg-9 col-12 p-2 my-2 d-flex flex-column align-items-center mx-auto">
         {/* loader */}
         <Spinner
           className="position-static"

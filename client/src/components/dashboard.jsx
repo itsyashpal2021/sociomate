@@ -29,8 +29,6 @@ export default function Dashboard() {
         className="navbar navbar-expand-lg navbar-dark"
         style={{
           backgroundColor: "rgba(0,0,0,0.90)",
-          position: "sticky",
-          top: 0,
         }}
       >
         <div className="container-fluid">

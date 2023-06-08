@@ -54,9 +54,9 @@ function ErrorBoundry() {
 }
 
 const root = document.getElementById("root");
-root.style.height = window.innerHeight + "px";
+root.style.minHeight = window.innerHeight + "px";
 window.addEventListener("resize", () => {
-  root.style.height = window.innerHeight + "px";
+  root.style.minHeight = window.innerHeight + "px";
 });
 
 ReactDOM.createRoot(root).render(
