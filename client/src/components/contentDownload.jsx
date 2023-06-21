@@ -321,6 +321,49 @@ export default function ContentDownload(props) {
           </div>
         </div>
       </div>
+
+      {/* subtitle generation */}
+      {/* <div className="d-flex flex-column align-items-center col-xl-3 col-sm-6 ">
+        <p className="h5" style={{ color: "#08e70f" }}>
+          Generate Subtitles:
+        </p>
+        <div className="d-flex">
+          <div className="d-flex flex-column">
+            <span className="text-white-50 fs-6 fw-bold">Language</span>
+            <CustomDropdown
+              options={subtitleLanguageOptions}
+              id="subtitleLanguageOptions"
+              optionHoverColor="rgba(0,0,0,0.45)"
+              onValueChange={(value) => {
+                // change subtitle language here
+              }}
+            />
+          </div>
+          <div className="d-flex flex-column ms-4">
+            <button
+              className="btn btn-success ms-4 position-relative opacity-100"
+              style={{ height: "fit-content" }}
+              onClick={generateSubtitles}
+            >
+              <span className="d-xxl-block d-xl-none d-md-block d-sm-none ">
+                Download
+              </span>
+              <i className="fa-solid fa-arrow-down d-xxl-none d-xl-block d-md-none d-sm-block  d-none" />
+              <Spinner />
+              <span
+                className="d-block fs-5 fw-bold text-center w-100 downloadProgress"
+                style={{
+                  position: "absolute",
+                  left: "50%",
+                  top: "50%",
+                  transform: "translate(-50%, -50%)",
+                  color: "#fffb2d",
+                }}
+              ></span>
+            </button>
+          </div>
+        </div>
+      </div> */}
     </div>
   );
 }

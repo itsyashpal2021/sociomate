@@ -1,13 +1,17 @@
-import React, { useState } from "react";
+import React from "react";
 import { formatNumberShort, postToNodeServer } from "../utils.js";
 import Spinner from "./spinner.jsx";
 import ContentDownload from "./contentDownload.jsx";
 import { useOutletContext } from "react-router-dom";
 
 export default function YtDownloader() {
-  const [searchText, setSearchText] = useState("");
-  const [searchResult, setSearchResult] = useState(undefined);
-  const windowWidth = useOutletContext();
+  const {
+    windowWidth,
+    searchText,
+    setSearchText,
+    searchResult,
+    setSearchResult,
+  } = useOutletContext();
 
   const isValidYTUrl = (url) => {
     // https://youtu.be/yyzLruH9aEw
@@ -43,6 +47,7 @@ export default function YtDownloader() {
             type="searchYt"
             name="searchYt"
             id="searchYt"
+            value={searchText}
             placeholder="Enter Youtube Video Link"
             className={
               "form-control-lg text-black border border-3 " +

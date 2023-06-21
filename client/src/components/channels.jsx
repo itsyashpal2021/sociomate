@@ -1,20 +1,25 @@
-import React, { useState } from "react";
+import React from "react";
 import "../css/form.css";
 import Spinner from "./spinner";
 import { formatNumberShort, postToNodeServer } from "../utils";
+import { useOutletContext } from "react-router-dom";
 
 export default function Channels() {
-  const [searchText, setSearchText] = useState("");
-  const [searchResult, setSearchResult] = useState([]);
+  const {
+    channelSearchText,
+    setChannelSearchText,
+    channelSearchResult,
+    setChannelSearchResult,
+  } = useOutletContext();
 
   const onSearch = async () => {
     document.getElementById("chaannelSearchSpinner").style.display = "block";
-    setSearchResult([]);
+    setChannelSearchResult([]);
     const res = await postToNodeServer("/ytChannelSearch", {
-      channelName: searchText,
+      channelName: channelSearchText,
     });
     if (res.status === 200) {
-      setSearchResult([...res.data.searchResults]);
+      setChannelSearchResult([...res.data.searchResults]);
     }
     document.getElementById("chaannelSearchSpinner").style.display = "none";
   };
@@ -38,7 +43,7 @@ export default function Channels() {
           }}
           autoComplete="off"
           onChange={(e) => {
-            setSearchText(e.target.value);
+            setChannelSearchText(e.target.value);
           }}
           onKeyDown={(e) => {
             if (e.key === "Enter" && e.target.value !== "") onSearch();
@@ -46,7 +51,7 @@ export default function Channels() {
         />
         <button
           className="btn btn-secondary h-100 px-3"
-          disabled={searchText === ""}
+          disabled={channelSearchText === ""}
           style={{
             borderTopLeftRadius: 0,
             borderBottomLeftRadius: 0,
@@ -69,7 +74,7 @@ export default function Channels() {
         />
 
         {/* Search Results */}
-        {searchResult.map((channel) => {
+        {channelSearchResult.map((channel) => {
           //viewCount subscriberCount hiddenSubscriberCount videoCount
           return (
             <div

@@ -19,6 +19,7 @@ export default function About() {
         YouTube videos like never before. Here's what you can do on our
         platform:
       </p>
+
       <div className="row container-fluid justify-content-between p-0 m-0 mt-2">
         <div className="col-lg-5 d-flex p-2">
           <p className="text-white fs-6 ms-2">
@@ -34,6 +35,7 @@ export default function About() {
             for users who want to save captivating visuals.
           </p>
         </div>
+
         <div className="col-lg-5 d-flex p-2">
           <p className="text-white fs-6 ms-2">
             <span
@@ -48,6 +50,7 @@ export default function About() {
             has the tools to make it happen.
           </p>
         </div>
+
         <div className="col-lg-5 d-flex p-2">
           <p className="text-white fs-6 ms-2">
             <span
@@ -62,7 +65,8 @@ export default function About() {
             compilations, or simply enjoying your favorite songs on the go.
           </p>
         </div>
-        <div className="col-lg-5 d-flex p-2">
+
+        {/* <div className="col-lg-5 d-flex p-2">
           <p className="text-white fs-6 ms-2">
             <span
               className="text-success fw-bold fs-6"
@@ -76,7 +80,8 @@ export default function About() {
             looking to reach a broader audience or for viewers who prefer
             subtitles for a better understanding.
           </p>
-        </div>
+        </div> */}
+
         <div className="col-lg-5 d-flex p-2">
           <p className="text-white fs-6 ms-2">
             <span

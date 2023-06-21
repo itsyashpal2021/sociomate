@@ -1,8 +1,6 @@
 require("dotenv").config();
 const express = require("express");
-const fs = require("fs");
 const path = require("path");
-const https = require("https");
 const cors = require("cors");
 const {
   searchYtVideo,
@@ -36,12 +34,6 @@ if (process.env.NODE_ENV === "production") {
   );
 }
 
-const options = {
-  key: fs.readFileSync("server.key"),
-  cert: fs.readFileSync("server.cert"),
-};
-
-const httpsServer = https.createServer(options, app);
-httpsServer.listen(port, () => {
+app.listen(port, () => {
   console.log(`App listening on port ${port}`);
 });

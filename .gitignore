@@ -129,9 +129,4 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-yt-analytics-oauth.json
-token.json
-service-account-key.json
-server.cert
-server.key
-temp/*
+client/build

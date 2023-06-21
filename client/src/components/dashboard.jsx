@@ -4,7 +4,15 @@ import "../css/dashboard.css";
 import "../css/form.css";
 
 export default function Dashboard() {
+  //yt downloader states
+  const [searchText, setSearchText] = useState("");
+  const [searchResult, setSearchResult] = useState(undefined);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  //channel states
+  const [channelSearchText, setChannelSearchText] = useState("");
+  const [channelSearchResult, setChannelSearchResult] = useState([]);
+
   const location = useLocation();
 
   useEffect(() => {
@@ -13,7 +21,12 @@ export default function Dashboard() {
     if (activeNavlink) activeNavlink.classList.remove("active");
 
     const navLink = document.getElementById(path.split("/")[1]);
-    if (navLink) navLink.classList.add("active");
+    if (navLink) {
+      navLink.classList.add("active");
+      document
+        .getElementById("navbarSupportedContent")
+        .classList.remove("show");
+    }
   }, [location.pathname]);
 
   useEffect(() => {
@@ -88,7 +101,19 @@ export default function Dashboard() {
           </div>
         </div>
       </nav>
-      <Outlet context={windowWidth} />
+      <Outlet
+        context={{
+          windowWidth,
+          searchText,
+          setSearchText,
+          searchResult,
+          setSearchResult,
+          channelSearchText,
+          setChannelSearchText,
+          channelSearchResult,
+          setChannelSearchResult,
+        }}
+      />
     </div>
   );
 }
