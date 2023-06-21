@@ -1,6 +1,8 @@
 # youtix
 A youtube toolbox for content downloading and channel stats analysis.
 
+Deployed at [https://youtix.onrender.com/](https://youtix.onrender.com/)
+
 ## Features
 * video search through yt url.
 * download content like thumbnails, video and audio in various available qualities.
