@@ -16,7 +16,8 @@ axios.interceptors.response.use(
 );
 
 // const nodeURL = "http://192.168.223.124:5000";
-const nodeURL = "http://localhost:5000";
+// const nodeURL = "http://localhost:5000";
+const nodeURL = "https://youtix.onrender.com";
 
 export const postToNodeServer = async (route, body, options = {}) => {
   // console.log("in post");
